@@ -1,10 +1,6 @@
---drop procedure if exists spm4_layoutsatn_pruebas_2022;
+drop procedure if exists spm4_layoutsatn_mclr_2022;
 create procedure spm4_layoutsatn_mclr_2022(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
 returning char(265);
------realizado por Roberto Reyes Pacheco. Programa para ISSSTE ASEGURADOR
------el día 14/07/2020
------usa GenLinSATn.sql y GenNOHn.sql, n al final es nueva version
------modificado para tabla cosif_timbrado_2022 el 12/01/2022
    define wi1,wi2,wi3,wi4,wi5,wi6,wi7,wi8,wi9,wi10,wi11,wi12,wi13,wi14,wi15,wi16,wi17,wi18,wi19,wi20          money(18,2);
    define wi21,wi22,wi23,wi24,wi25,wi26,wi27,wi28,wi29,wi30,wi31,wi32,wi33,wi34,wi35,wi36,wi37,wi38,wi39,wi40 money(18,2);
    define wp1,wp2,wp3,wp4,wp5,wp6,wp7,wp8,wp9,wp10,wp11,wp12,wp13,wp14,wp15,wp16,wp17,wp18,wp19,wp20          varchar(01);
@@ -112,27 +108,63 @@ returning char(265);
     End If;
 
     ForEach
-      Select id_empresa,rfc[1,6],num_cons,tot_net_cheque,tot_ded_cheque,tot_perc_cheque,trim(nom_emp),id_banco,cuenta,id_div_geografica,
+      Select
+        C.id_empresa, C.rfc[1,6],num_cons,tot_net_cheque,tot_ded_cheque,tot_perc_cheque,trim(nom_emp),id_banco,cuenta,id_div_geografica,
         adscripcion, id_servicio, puesto,
-        p1,c1,i1,p2,c2,i2,p3,c3,i3,
-        p4,c4,i4,p5,c5,i5,p6,c6,i6,p7,c7,i7,p8,c8,i8,p9,c9,i9,p10,c10,i10,
-        p11,c11,i11,p12,c12,i12,p13,c13,i13,p14,c14,i14,
-        p15,c15,i15,p16,c16,i16,p17,c17,i17,p18,c18,i18,p19,c19,i19,p20,c20,i20,p21,c21,i21,p22,c22,i22,p23,c23,i23,p24,c24,
-        i24,p25,c25,i25,p26,c26,i26,p27,c27,i27,p28,c28,i28,p29,c29,i29,p30,c30,i30,p31,c31,i31,p32,c32,i32,p33,c33,i33,p34,
-        c34,i34,p35,c35,i35,p36,c36,i36,p37,c37,i37,p38,c38,i38,p39,c39,i39,p40,c40,i40
-        into wid_empresa,wemp,wfolio,wliquido,wdeduc,wperc,wnombre,wbanco,wcuenta,wdivgeo,
+        p1,c1,i1,p2,c2,i2,p3,c3,i3,p4,c4,i4,p5,c5,i5,p6,c6,i6,p7,c7,i7,p8,c8,i8,p9,c9,i9,p10,c10,i10,
+        p11,c11,i11,p12,c12,i12,p13,c13,i13,p14,c14,i14,p15,c15,i15,p16,c16,i16,p17,c17,i17,p18,c18,i18,p19,c19,i19,p20,c20,i20,
+        p21,c21,i21,p22,c22,i22,p23,c23,i23,p24,c24,i24,p25,c25,i25,p26,c26,i26,p27,c27,i27,p28,c28,i28,p29,c29,i29,p30,c30,i30,
+        p31,c31,i31,p32,c32,i32,p33,c33,i33,p34,c34,i34,p35,c35,i35,p36,c36,i36,p37,c37,i37,p38,c38,i38,p39,c39,i39,p40,c40,i40,
+        trim(id_c_u_r_p_st),numero_ss,trim(id_legal),
+        NVL(trim(apellido_1),' ') ||' '|| NVL(trim(apellido_2),' ') ||' '|| NVL(trim(nombre),' '),
+        NVL(n_puesto_plaza, '') n_puesto_plaza, NVL(n_clave_servicio, '') n_clave_servicio, sem_trabajadas, antig_anio, antig_meses, antig_dias,
+        NVL(pagaduria, 'ERROR') pagaduria,
+        Case
+          When cp Is Null And C.id_empresa = '01' Then '06080'
+          Else ''
+        End cp
+        Into wid_empresa,wemp,wfolio,wliquido,wdeduc,wperc,wnombre,wbanco,wcuenta,wdivgeo,
         wadscripcion, wiserv, wipuesto,
-        wp1,wc1,wi1,wp2,wc2,wi2,wp3,wc3,wi3,wp4,wc4,wi4,wp5,wc5,wi5,wp6,wc6,wi6,wp7,wc7,wi7,wp8,wc8,wi8,wp9,wc9,wi9,wp10,wc10,
-        wi10,wp11,wc11,wi11,wp12,wc12,wi12,wp13,wc13,wi13,wp14,wc14,
-        wi14,wp15,wc15,wi15,wp16,wc16,wi16,wp17,wc17,wi17,wp18,wc18,wi18,wp19,wc19,wi19,wp20,wc20,wi20,wp21,wc21,wi21,wp22,
-        wc22,wi22,wp23,wc23,wi23,wp24,wc24,wi24,wp25,wc25,wi25,wp26,wc26,wi26,wp27,wc27,wi27,wp28,wc28,wi28,wp29,wc29,wi29,
-        wp30,wc30,wi30,wp31,wc31,wi31,wp32,wc32,wi32,wp33,wc33,wi33,wp34,wc34,wi34,wp35,wc35,wi35,wp36,wc36,wi36,wp37,wc37,
-        wi37,wp38,wc38,wi38,wp39,wc39,wi39,wp40,wc40,wi40
-      From cosif_timbrado_2022
-      Where fec_pago = wfec_pago
-        And id_empresa = wempresa
-        And tipo = wtipo
-              ---and rfc in  ('362025','253015')
+        wp1,wc1,wi1,wp2,wc2,wi2,wp3,wc3,wi3,wp4,wc4,wi4,wp5,wc5,wi5,wp6,wc6,wi6,wp7,wc7,wi7,wp8,wc8,wi8,wp9,wc9,wi9,wp10,wc10,wi10,
+        wp11,wc11,wi11,wp12,wc12,wi12,wp13,wc13,wi13,wp14,wc14,wi14,wp15,wc15,wi15,wp16,wc16,wi16,wp17,wc17,wi17,wp18,wc18,wi18,wp19,wc19,wi19,wp20,wc20,wi20,
+        wp21,wc21,wi21,wp22,wc22,wi22,wp23,wc23,wi23,wp24,wc24,wi24,wp25,wc25,wi25,wp26,wc26,wi26,wp27,wc27,wi27,wp28,wc28,wi28,wp29,wc29,wi29,wp30,wc30,wi30,
+        wp31,wc31,wi31,wp32,wc32,wi32,wp33,wc33,wi33,wp34,wc34,wi34,wp35,wc35,wi35,wp36,wc36,wi36,wp37,wc37,wi37,wp38,wc38,wi38,wp39,wc39,wi39,wp40,wc40,wi40,
+        wcurp,wnumero_ss,wid_legal,wnombre2, wdpuesto, wdserv, wsem_trabajadas,wantig_anio, wantig_meses, wantig_dias,
+        wpagaduria, wcp
+      From cosif_timbrado_2022 C
+        Left Outer Join m4t_puestos_plaza P
+          ON P.id_puesto_plaza = 
+            Case C.id_tipo_tabulador
+              When 'F' Then Substr(C.puesto,1,2) || Substr(C.puesto,6,10)
+              Else C.puesto
+            End
+          And C.id_empresa = P.id_empresa
+        Left Join m4t_clave_servicio S
+          ON C.id_servicio = S.id_clave_servicio
+           And C.id_empresa = S.id_empresa
+        Inner Join m4t_empleados E
+          ON C.rfc = E.id_empleado
+        Inner Join ramo_ct_ok R
+          ON C.adscripcion = R.ct10
+        Left Join m4t_domicilios_issste D
+          ON D.id_centro_pago = R.pagaduria
+        Left Join (
+            Select --id_empleado, sum(dias)-sum(dias_descuento) dias_trabajados,
+              id_empleado,
+              trunc(((sum(dias)-sum(dias_descuento))/7)) sem_trabajadas,
+              trunc((sum(dias)-sum(dias_descuento))/365) antig_anio,
+              trunc(((sum(dias)-sum(dias_descuento))-trunc((sum(dias)-sum(dias_descuento))/365)*365)/30.4) antig_meses,
+              trunc((((sum(dias)-sum(dias_descuento))-trunc((sum(dias)-sum(dias_descuento))/365)*365)/30.4-trunc(((sum(dias)-sum(dias_descuento))-trunc((sum(dias)-sum(dias_descuento))/365)*365)/30.4))*30.4) antig_dias
+            From m4_antiguedades
+            Where tipo_incidencia <> 'ANTIGUEDAD FEDERAL'
+            Group by id_empleado
+          ) A
+          ON C.rfc = A.id_empleado
+      Where fec_pago = '2022/05/31' -- wfec_pago
+        And C.id_empresa = '01' -- wempresa
+        And tipo = '0' -- wtipo
+
+
 
       ON EXCEPTION set error_num
         return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
@@ -141,31 +173,10 @@ returning char(265);
         values (wnum_linea,wid_empresa,wemp,'Error-'||desc_err||':'||error_num|| '-emp:'||wemp||'-Cons:'||wnum_cons2);
       END EXCEPTION WITH RESUME;
 
-	    Select trim(id_c_u_r_p_st),numero_ss,trim(id_legal),
-        nvl(trim(apellido_1),' ')||' '||nvl(trim(apellido_2),' ')||' '||nvl(trim(nombre),' ')
-        into wcurp,wnumero_ss,wid_legal,wnombre2
-      From m4t_empleados
-      Where id_sociedad = id_sociedad
-        And id_empleado = wemp;
-               ---and rfc in ('355290','356946','368117','361062','384802','357819')--(select id_empleado from emp_sat)
-
-      Select --id_empleado, sum(dias)-sum(dias_descuento) dias_trabajados,
-        trunc(((sum(dias)-sum(dias_descuento))/7)),
-        trunc((sum(dias)-sum(dias_descuento))/365),
-        trunc(((sum(dias)-sum(dias_descuento))-trunc((sum(dias)-sum(dias_descuento))/365)*365)/30.4),
-        trunc((((sum(dias)-sum(dias_descuento))-trunc((sum(dias)-sum(dias_descuento))/365)*365)/30.4-trunc(((sum(dias)-sum(dias_descuento))-trunc((sum(dias)-sum(dias_descuento))/365)*365)/30.4))*30.4)
-        into wsem_trabajadas,wantig_anio, wantig_meses, wantig_dias
-      From m4_antiguedades
-      Where id_empleado = wemp
-        And tipo_incidencia <> 'ANTIGUEDAD FEDERAL';
-
       return 'llevo lay---> ' || w_cont||' '||wemp  with resume;
-
       let wnum_cons2 = wnum_cons2 + 1;
       let wnum_cons = wnum_cons2;
-
       let wdias_lab=15; let wdias=15;
-
       let wispt=0;
 
       If wc1='53' then let wispt=wi1; else If wc2='53' then let wispt=wi2; else If wc3='53' then let wispt=wi3;
@@ -395,41 +406,6 @@ returning char(265);
         If (wc40='09') or (wc40='14') or (wc40='18') then let flg40 = 0; End If;  end If;   
 
       let desc_err = 'E01';
-
-      Select pagaduria into wpagaduria
-      From ramo_ct_ok 
-      Where ct10 = wadscripcion;
-
-      If wpagaduria is null then let wpagaduria = 'ERROR'; End If;
-
-      Select cp into wcp
-      From m4t_domicilios_issste where id_centro_pago = wpagaduria;
-
-      If wcp is null then
-         If wempresa='01' then let wcp = '06080'; End If;
-      End If;
-
-      let wdpuesto = '';
-      Select n_puesto_plaza into wdpuesto
-      From m4t_puestos_plaza
-      Where id_sociedad = '01'
-        And id_empresa = wempresa
-        And id_puesto_plaza = wipuesto;
-
-      If wdpuesto is null Then
-        let wdpuesto = '';
-      End If;
-
-      let wdserv = '';
-      Select n_clave_servicio into wdserv
-      From m4t_clave_servicio
-      Where id_sociedad = '01'
-        And id_empresa = wempresa
-        And id_clave_servicio = wiserv;
-
-      If wdserv is null Then
-         let wdserv = '';
-      End If;
 
       Insert Into valida_timbrado (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
 
@@ -839,7 +815,7 @@ returning char(265);
           End If;
         End If;
       End If;
-      
+
       If wp10 = 'P' Then
         If wi10 != 0 and flg10 = 0 Then
           Call GenLinSATn(wemp,wp10,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
@@ -1226,235 +1202,235 @@ returning char(265);
           Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp2 = 'D' Then
         If wi2 != 0 and flg2 = 0 Then
           Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp3 = 'D' Then
         If wi3 != 0 and flg3 = 0 Then
           Call GenLinSATn(wemp,wp3,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp4 = 'D' Then
         If wi4 != 0 and flg4 = 0 Then
           Call GenLinSATn(wemp,wp4,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp5 = 'D' Then
         If wi5 != 0 and flg5 = 0 Then
           Call GenLinSATn(wemp,wp5,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp6 = 'D' Then
         If wi6 != 0 and flg6 = 0 Then
           Call GenLinSATn(wemp,wp6,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp7 = 'D' Then
         If wi7 != 0 and flg7 = 0 Then
           Call GenLinSATn(wemp,wp7,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp8 = 'D' Then
         If wi8 != 0 and flg8 = 0 Then
           Call GenLinSATn(wemp,wp8,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp9 = 'D' Then
         If wi9 != 0 and flg9 = 0 Then
           Call GenLinSATn(wemp,wp9,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp10 = 'D' Then
         If wi10 != 0 and flg10 = 0 Then
           Call GenLinSATn(wemp,wp10,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp11 = 'D' Then
         If wi11 != 0 and flg11 = 0 Then
           Call GenLinSATn(wemp,wp11,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp12 = 'D' Then
         If wi12 != 0 and flg12 = 0 Then
           Call GenLinSATn(wemp,wp12,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp13 = 'D' Then
         If wi13 != 0 and flg13 = 0 Then
           Call GenLinSATn(wemp,wp13,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp14 = 'D' Then
         If wi14 != 0 and flg14 = 0 Then
           Call GenLinSATn(wemp,wp14,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp15 = 'D' Then
         If wi15 != 0 and flg15 = 0 Then
           Call GenLinSATn(wemp,wp15,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp16 = 'D' Then
         If wi16 != 0 and flg16 = 0 Then
           Call GenLinSATn(wemp,wp16,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp17 = 'D' Then
         If wi17 != 0 and flg17 = 0 Then
           Call GenLinSATn(wemp,wp17,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp18 = 'D' Then
         If wi18 != 0 and flg18 = 0 Then
           Call GenLinSATn(wemp,wp18,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp19 = 'D' Then
         If wi19 != 0 and flg19 = 0 Then
           Call GenLinSATn(wemp,wp19,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp20 = 'D' Then
         If wi20 != 0 and flg20 = 0 Then
           Call GenLinSATn(wemp,wp20,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp21 = 'D' Then
         If wi21 != 0 and flg21 = 0 Then
           Call GenLinSATn(wemp,wp21,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp22 = 'D' Then
         If wi22 != 0 and flg22 = 0 Then
           Call GenLinSATn(wemp,wp22,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp23 = 'D' Then
         If wi23 != 0 and flg23 = 0 Then
           Call GenLinSATn(wemp,wp23,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp24 = 'D' Then
         If wi24 != 0 and flg24 = 0 Then
           Call GenLinSATn(wemp,wp24,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp25 = 'D' Then
         If wi25 != 0 and flg25 = 0 Then
           Call GenLinSATn(wemp,wp25,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp26 = 'D' Then
         If wi26 != 0 and flg26 = 0 Then
           Call GenLinSATn(wemp,wp26,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp27 = 'D' Then
         If wi27 != 0 and flg27 = 0 Then
           Call GenLinSATn(wemp,wp27,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp28 = 'D' Then
         If wi28 != 0 and flg28 = 0 Then
           Call GenLinSATn(wemp,wp28,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp29 = 'D' Then
         If wi29 != 0 and flg29 = 0 Then
           Call GenLinSATn(wemp,wp29,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp30 = 'D' Then
         If wi30 != 0 and flg30 = 0 Then
           Call GenLinSATn(wemp,wp30,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp31 = 'D' Then
         If wi31 != 0 and flg31 = 0 Then
           Call GenLinSATn(wemp,wp31,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp32 = 'D' Then
         If wi32 != 0 and flg32 = 0 Then
           Call GenLinSATn(wemp,wp32,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp33 = 'D' Then
         If wi33 != 0 and flg33 = 0 Then
           Call GenLinSATn(wemp,wp33,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp34 = 'D' Then
         If wi34 != 0 and flg34 = 0 Then
           Call GenLinSATn(wemp,wp34,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp35 = 'D' Then
         If wi35 != 0 and flg35 = 0 Then
           Call GenLinSATn(wemp,wp35,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp36 = 'D' Then
         If wi36 != 0 and flg36 = 0 Then
           Call GenLinSATn(wemp,wp36,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp37 = 'D' Then
         If wi37 != 0 and flg37 = 0 Then
           Call GenLinSATn(wemp,wp37,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp38 = 'D' Then
         If wi38 != 0 and flg38 = 0 Then
           Call GenLinSATn(wemp,wp38,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp39 = 'D' Then
         If wi39 != 0 and flg39 = 0 Then
           Call GenLinSATn(wemp,wp39,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
         End If;
       End If;
-      
+
       If wp40 = 'D' Then
         If wi40 != 0 and flg40 = 0 Then
           Call GenLinSATn(wemp,wp40,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
@@ -1467,7 +1443,7 @@ returning char(265);
 
       let w_cont = w_cont + 1;
     End ForEach;
-   
+
     SYSTEM "echo unload to 'Archivo.txt' > sql01.sql";
     SYSTEM "echo select linea from info_satn order by num_linea >> sql01.sql";
     SYSTEM "dbaccess m4prod sql01.sql";
@@ -1475,7 +1451,6 @@ returning char(265);
     SYSTEM "sed '1,$s/|//g' Archivo.txt > Archivo1.txt";
     SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT_2022.txt";
 
-   
     let w_cont = w_cont - 1;
     Update timb_cons20 set num_consf = wnum_cons2
     Where empresa = wid_empresa and fec_pago = wfec_pago and fec_crea = wfec_pagox and descripcion = w_NomDes and num_cons = wnum_consi;
