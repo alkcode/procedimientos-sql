@@ -1,5 +1,5 @@
-drop procedure if exists spm4_layoutsatn_pruebas_2022_alek;
-create procedure spm4_layoutsatn_pruebas_2022_alek(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
+drop procedure if exists spm4_layoutsatn_pruebas_2022;
+create procedure spm4_layoutsatn_pruebas_2022(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
 returning char(265);
    define wi1,wi2,wi3,wi4,wi5,wi6,wi7,wi8,wi9,wi10,wi11,wi12,wi13,wi14,wi15,wi16,wi17,wi18,wi19,wi20          money(18,2);
    define wi21,wi22,wi23,wi24,wi25,wi26,wi27,wi28,wi29,wi30,wi31,wi32,wi33,wi34,wi35,wi36,wi37,wi38,wi39,wi40 money(18,2);
