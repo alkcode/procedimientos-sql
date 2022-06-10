@@ -1,5 +1,5 @@
-drop procedure if exists spm4_layoutsatn_pruebas_2022;
-create procedure spm4_layoutsatn_pruebas_2022(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
+drop procedure if exists spm4_layoutsatn_pruebas_2022_alek;
+create procedure spm4_layoutsatn_pruebas_2022_alek(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
 returning char(265);
    define wi1,wi2,wi3,wi4,wi5,wi6,wi7,wi8,wi9,wi10,wi11,wi12,wi13,wi14,wi15,wi16,wi17,wi18,wi19,wi20          money(18,2);
    define wi21,wi22,wi23,wi24,wi25,wi26,wi27,wi28,wi29,wi30,wi31,wi32,wi33,wi34,wi35,wi36,wi37,wi38,wi39,wi40 money(18,2);
@@ -54,8 +54,8 @@ returning char(265);
 
    set isolation to dirty read;
 
-   ---set debug file to 'bancos.log';
-   ---trace on;
+   set debug file to 'bancos.log';
+   trace on;
       
    let wemp=' '; let w_cont=1; let wconse=1; let wzero=0.0;
 
@@ -167,9 +167,10 @@ returning char(265);
             Group by id_empleado
           ) A
           ON C.rfc = A.id_empleado
-      Where fec_pago = '2022/05/31' -- wfec_pago
-        And C.id_empresa = '01' -- wempresa
-        And tipo = '0' -- wtipo
+      Where fec_pago = wfec_pago
+        And C.id_empresa =  wempresa
+        And tipo = wtipo
+        And rfc in( '407986', '357819')
 
       ON EXCEPTION set error_num
         return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
@@ -455,7 +456,7 @@ returning char(265);
         let wid_legal = "ERROR_RFC";
       End If;
 
-      If (wcurp[1,2] = '  ' or wcurp is null or (wcurp != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If;
+      If (wcurp[1,2] = '  ' or wcurp is null or wcurp != 18 or wcurp matches'*Ñ*') Then let wcurp = ' '; End If;
       If (wnumero_ss[1,2] = '  ' or wnumero_ss is null) Then let wnumero_ss = '99999999999'; End If;
       If (wnombre[1] = ' ' or wnombre is null or wnombre[1] = '') Then let wnombre = wnombre2; End If;
       If (wnombre like '%  %') Then let wnombre = wnombre2; End If;
