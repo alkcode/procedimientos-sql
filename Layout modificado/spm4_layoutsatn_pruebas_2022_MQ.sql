@@ -1,6 +1,5 @@
-DROP FUNCTION If Exists spm4_layoutsatn_pruebas_2022_mq;
-
-create procedure spm4_layoutsatn_pruebas_2022_MQ(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
+Drop Procedure If Exists spm4_layoutsatn_pruebas_2022_mq;
+Create Procedure spm4_layoutsatn_pruebas_2022_mq(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
 returning char(265);
    define wi1,wi2,wi3,wi4,wi5,wi6,wi7,wi8,wi9,wi10,wi11,wi12,wi13,wi14,wi15,wi16,wi17,wi18,wi19,wi20          money(18,2);
    define wi21,wi22,wi23,wi24,wi25,wi26,wi27,wi28,wi29,wi30,wi31,wi32,wi33,wi34,wi35,wi36,wi37,wi38,wi39,wi40 money(18,2);
@@ -10,7 +9,7 @@ returning char(265);
    define wc21,wc22,wc23,wc24,wc25,wc26,wc27,wc28,wc29,wc30,wc31,wc32,wc33,wc34,wc35,wc36,wc37,wc38,wc39,wc40 varchar(02);
    define wemp varchar(10); define w_cont,wdias_lab,wdias,wconse,wnum_cons,wgrav,wconse9,wcons,wnum_linea integer;
    define wnum_lini, wcon_tex integer;
-   define wlongmal,wcaracterr,wbandera, wbandera01, wnum_cons2, wnum_consi, wnum_consv integer;
+   define wlongmal,wcaracterr,wbandera, wbandera01, wBanderaEmpleado, wnum_cons2, wnum_consi, wnum_consv integer;
    
    define wdias_ant, wmess_ant, wanos_ant, wmess_res, wsem_ant integer; define wantigf char(10);
    define wdia_p, wmes_p varchar(02); define wano_p varchar(04); 
@@ -53,10 +52,10 @@ returning char(265);
    define w_NomDes, w_TipCont, w_Period, w_TipNom varchar(10,0); define w_TipCont1, w_Period1 varchar(2,0); define w_TipNom1 varchar(1,0);
    define wnumero_ss_bmex varchar(14); define wcurp_bmex varchar(18); define wid_legal_bmex varchar(13);
 
-   set isolation to dirty read;
+   Set Isolation To Dirty Read;
 
-   set debug file to 'NO_SALE_MQ.log';
-   trace on;
+  --  set debug file to 'prueba_alek_mq.log';
+  --  trace on;
       
    let wemp=' '; let w_cont=1; let wconse=1; let wzero=0.0;
 
@@ -64,20 +63,14 @@ returning char(265);
    let wfec_pagox=current;
    let wnum_linea=0;
    
-    --drop table info_satn;
+    Drop Table info_satn;
 
-    --create table info_satn
-    -- (num_linea integer,
-    --  id_empresa varchar(02),
-    --  id_empleado varchar(10),
-    --  linea char(500)) fragment by round robin in bdbase,bdhist;
-    --revoke all on info_satn from "public";   
-   
-    Delete info_satn
-    Where id_empleado IN ('158125', '181101', '188183', '204660', '207734', '210854', '213910', '294916', '314354', '357353', '359675', '360077', '369725', '391239', '394276', '396397', '403072', '403166', '404283', '405500', '409802', '410217', '411003', '411789', '411790', '411791', '411792', '502391', '503316');
-
-    Delete valida_timbrado_mejoras_query
-    Where id_empleado IN ('158125', '181101', '188183', '204660', '207734', '210854', '213910', '294916', '314354', '357353', '359675', '360077', '369725', '391239', '394276', '396397', '403072', '403166', '404283', '405500', '409802', '410217', '411003', '411789', '411790', '411791', '411792', '502391', '503316');
+    Create Table info_satn
+    (num_linea integer,
+     id_empresa varchar(02),
+     id_empleado varchar(10),
+     linea char(500)) fragment by round robin in bdbase,bdhist;
+    Revoke all On info_satn From "public";   
 
     let w_TipCont = '01-TiemInd'; let w_Period = '04-Quincen'; let w_TipNom = 'O-Ordinari';
     let w_TipCont1 = '01'; let w_Period1 = '04'; let w_TipNom1 = 'O'; let w_NomDes = 'O';
@@ -163,7 +156,7 @@ returning char(265);
         Left Join m4t_domicilios_issste D
           ON D.id_centro_pago = R.pagaduria
         Left Join (
-            Select --id_empleado, sum(dias)-sum(dias_descuento) dias_trabajados,
+            Select 
               id_empleado,
               trunc(((sum(dias)-sum(dias_descuento))/7)) sem_trabajadas,
               trunc((sum(dias)-sum(dias_descuento))/365) antig_anio,
@@ -181,8 +174,6 @@ returning char(265);
         And c11<>'26' And c12<>'26' And c13<>'26' And c14<>'26' And c15<>'26' And c16<>'26' And c17<>'26' And c18<>'26' And c19<>'26' And c20<>'26'
         And c21<>'26' And c22<>'26' And c23<>'26' And c24<>'26' And c25<>'26' And c26<>'26' And c27<>'26' And c28<>'26' And c29<>'26' And c30<>'26'
         And c31<>'26' And c32<>'26' And c33<>'26' And c34<>'26' And c35<>'26' And c36<>'26' And c37<>'26' And c38<>'26' And c39<>'26' And c40<>'26')
-        --And C.rfc IN ('212537','161695','202046','357819','406529','309352','355290','407986','367131','246291','403504')
-        And C.rfc IN ('158125', '181101', '188183', '204660', '207734', '210854', '213910', '294916', '314354', '357353', '359675', '360077', '369725', '391239', '394276', '396397', '403072', '403166', '404283', '405500', '409802', '410217', '411003', '411789', '411790', '411791', '411792', '502391', '503316')
         order by 2
 
       ON EXCEPTION set error_num
@@ -447,7 +438,10 @@ returning char(265);
 
       Select nss, curp, filiacion Into wnumero_ss_bmex, wcurp_bmex, wid_legal_bmex
       From m4_inf_bmex
-      Where id_empleado = wemp and u_version = 'I';
+      Where id_empleado = wemp 
+        And u_version = 'I'
+        And fec_inicio <= wfec_pago
+        And (fec_fin <= wfec_pago Or fec_fin is null);
 
       If (wnumero_ss[1,2] = '  ' or wnumero_ss is null) Then
         Let wnumero_ss = wnumero_ss_bmex;
@@ -465,13 +459,14 @@ returning char(265);
         let wcurp = "ERROR_CURP";
       End If;
 
-      If length(wid_legal) != 13 Then
+      If (length(wid_legal) != 13) or (wid_legal is null) Then
+      -- If length(wid_legal) Then
         let wid_legal = "ERROR_RFC";
       End If;
 
-      --If (wcurp[1,2] = '  ' or wcurp is null or (wcurp != 18) or (wcurp matches'*Èæ*')) Then let wcurp = ' '; End If;
-      --If (wcurp[1,2] = '  ' or wcurp is null or wcurp != 18 or wcurp matches'*Èæ*') Then let wcurp = ' '; End If;
-      If ((wcurp[1,2] = '  ') or (wcurp is null) or (Length(wcurp) != 18) or (wcurp matches'*Èæ*')) Then let wcurp = ' '; End If;
+      --If (wcurp[1,2] = '  ' or wcurp is null or (wcurp != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If;
+      --If (wcurp[1,2] = '  ' or wcurp is null or wcurp != 18 or wcurp matches'*Ñ*') Then let wcurp = ' '; End If;
+      If ((wcurp[1,2] = '  ') or (wcurp is null) or (Length(wcurp) != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If;
       If (wnumero_ss[1,2] = '  ' or wnumero_ss is null) Then let wnumero_ss = '99999999999'; End If;
       If (wnombre[1] = ' ' or wnombre is null or wnombre[1] = '') Then let wnombre = wnombre2; End If;
       If (wnombre like '%  %') Then let wnombre = wnombre2; End If;
@@ -481,7 +476,8 @@ returning char(265);
       let cadenaE02 = 'RC@'||wid_legal||'@'||trim(wnombre)||'@P01';
       Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE02);
 
-      Select porcent Into wporcent From porc_empn Where id_empleado=wemp;
+
+     -- Select porcent Into wporcent From porc_empn Where id_empleado=wemp;   Esta variable no se usa
 
       let wfec_iniciox=wfec_inicio; let wfec_finx=wfec_fin;
 
@@ -489,7 +485,7 @@ returning char(265);
 
         let desc_err = 'NOE inf_rl01';
 
-        Select
+        Select First 1
           Case 
             When a.id_tipo_tabulador='F' Then a.id_grupo_grado_nivel
             Else a.id_nivel
@@ -498,53 +494,51 @@ returning char(265);
             When a.id_tipo_tabulador='F' Then a.id_integracion
             Else a.id_sub_nivel
           End Int_SubNivel,
-          a.id_zona, max(a.fec_imputacion), MIN(b.fecha_ini_ts), COUNT(*)
+          a.id_zona, MAX(a.fec_imputacion), MIN(b.fecha_ini_ts)
           Into wid_nivel_wid_grupo_grado_nivel, wid_sub_nivel_wid_integracion, 
-          wid_zona, wfec_imputacion, wfecha_ini_ts, wbandera01
+          wid_zona, wfec_imputacion, wfecha_ini_ts
         From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
-        where a.id_empleado = wemp
-          And a.fec_pago = wfec_pago
-          And a.id_empresa = wempresa
-          And a.id_empleado = b.id_empleado
+        Where a.id_empleado = b.id_empleado
           And a.fec_pago = b.fec_pago
           And a.fec_imputacion = b.fec_imputacion
           And a.fec_alta_empleado=b.fec_alta_empleado
           And a.id_sociedad=b.id_sociedad
-          group by GGN_Nivel,Int_SubNivel,id_zona;
+          And a.id_empleado = wemp
+          And a.fec_pago = wfec_pago
+          And a.id_empresa = wempresa
+        Group By GGN_Nivel,Int_SubNivel,id_zona;
 
-        If wbandera01 = 1 Then
+        -- Let wfec_alta_empleado = NULL;
+
+        SELECT a.c_sindic_local, a.c_sindic_nacion, a.d_antig_gob_fed, b.fecha_ingreso_st, a.prme_cont_tot, a.prme_cont_per, 
+               nvl(a.comentario, ''), a.id_puesto_plaza, a.id_centro_trab,a.id_centro_pago,b.fec_alta_empleado, a.id_empleado
+            Into wsindl, wsindn, wdiaantig, wfec_alta, wcont_des_tot, wcon_pag, wfal_ret, wi2puesto, wcen_trab, wcen_pago, wfec_alta_empleado, wBanderaEmpleado
+        FROM m4t_acumulado_rl1_2011 a,
+            m4t_acumulado_rl_2011 b
+        WHERE a.id_sociedad = b.id_sociedad 
+          AND a.id_empleado = b.id_empleado 
+          AND a.fec_alta_empleado = b.fec_alta_empleado 
+          AND a.fec_pago = b.fec_pago 
+          AND a.fec_imputacion = b.fec_imputacion 
+          AND a.id_empleado = wemp
+          AND a.fec_pago = wfec_pago
+          AND a.fec_pago = a.fec_imputacion -- * PAGO CORRIENTE
+          AND a.id_empresa = wempresa;
+
+        If (wBanderaEmpleado Is Not NULL) Then --wbandera01 = 1 Then
           let desc_err = 'NOE inf_rl102';
-          Select a.c_sindic_local, a.c_sindic_nacion, a.d_antig_gob_fed, b.fecha_ingreso_st, a.prme_cont_tot, a.prme_cont_per, nvl(a.comentario, ''), a.id_puesto_plaza, a.id_centro_trab,a.id_centro_pago,b.fec_alta_empleado
-            Into wsindl, wsindn, wdiaantig, wfec_alta, wcont_des_tot, wcon_pag, wfal_ret, wi2puesto, wcen_trab, wcen_pago, wfec_alta_empleado
-          From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
-          Where a.id_empleado = wemp
-            And a.fec_pago = wfec_pago
-            And a.fec_pago = a.fec_imputacion
-            And a.id_empresa = wempresa
-            And a.id_empleado = b.id_empleado
-            And a.fec_pago = b.fec_pago
-            And a.fec_imputacion = b.fec_imputacion;
         Else
           let wdiaantig = "999";
           let wsindl = "999";
           let wsindn = "999";
           let wfec_alta = "01/01/2021";
 
-          Select max(a.fec_imputacion) Into wfec_impu
-          From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
-          where a.id_empleado = wemp
-            And a.fec_pago = wfec_pago
-            And a.id_empresa = wempresa
-            And a.id_empleado = b.id_empleado
-            And a.fec_pago = b.fec_pago
-            And a.fec_imputacion = b.fec_imputacion;
-
-          Select a.c_sindic_local, a.c_sindic_nacion, a.d_antig_gob_fed, b.fecha_ingreso_st
-            Into wsindl, wsindn, wdiaantig, wfec_alta
+          Select a.c_sindic_local, a.c_sindic_nacion, a.d_antig_gob_fed, b.fecha_ingreso_st, a.prme_cont_tot, a.prme_cont_per, nvl(a.comentario, ''), a.id_puesto_plaza, a.id_centro_trab,a.id_centro_pago,b.fec_alta_empleado
+            Into wsindl, wsindn, wdiaantig, wfec_alta, wcont_des_tot, wcon_pag, wfal_ret, wi2puesto, wcen_trab, wcen_pago, wfec_alta_empleado
           From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b
           Where a.id_empleado = wemp
             And a.fec_pago = wfec_pago
-            And a.fec_imputacion = wfec_impu
+            And a.fec_imputacion = wfec_imputacion
             And a.id_empresa = wempresa
             And a.id_empleado = b.id_empleado
             And a.fec_pago = b.fec_pago
@@ -552,9 +546,9 @@ returning char(265);
 
           let desc_err = 'NOE acum_rl03';
 
-          If wfec_impu is null Then
+          If wfec_imputacion is null Then
             let desc_err = 'NOE acum_rl04';
-            return 'error en  ---> ' || wfec_impu||'fec_alta2'  with resume;
+            return 'error en  ---> ' || wfec_imputacion ||'fec_alta2'  with resume;
             let wdiaantig = "999";
             let wsindl = "999";
             let wsindn = "999";
