@@ -1,5 +1,5 @@
 Drop Procedure If Exists spm4_layoutsatn_pruebas_2022_alek;
-Create Procedure spm4_layoutsatn_pruebas_2022_alek(wfec_pago date,wtipo varchar(1), wempresa varchar(2), wempleados char(5000)) --Parametro de entrada para usuarios
+Create Procedure spm4_layoutsatn_pruebas_2022_alek(wfec_pago date,wtipo varchar(1), wempresa varchar(2), wempleados varchar(255)) --Parametro de entrada para usuarios
 returning char(265);
    define wi1,wi2,wi3,wi4,wi5,wi6,wi7,wi8,wi9,wi10,wi11,wi12,wi13,wi14,wi15,wi16,wi17,wi18,wi19,wi20          money(18,2);
    define wi21,wi22,wi23,wi24,wi25,wi26,wi27,wi28,wi29,wi30,wi31,wi32,wi33,wi34,wi35,wi36,wi37,wi38,wi39,wi40 money(18,2);
@@ -58,8 +58,8 @@ returning char(265);
 
    Set Isolation To Dirty Read;
 
-  --  set debug file to 'prueba_alek_mq.log';
-  --  trace on;
+    --set debug file to 'prueba_alek_mq.log';
+    --trace on;
       
    let wemp=' '; let w_cont=1; let wconse=1; let wzero=0.0;
 
@@ -81,14 +81,17 @@ returning char(265);
       Revoke all On info_satn From "public";   
 
     Else
-      let query_condicion = query_condicion || " And rfc in (" || wempleados ||") ";
+      let query_condicion = " And C.rfc in (" || wempleados ||") ";
 
-      let stmt_delete = "Delete info_satn " ||
+      let stmt_delete = "Delete From info_satn " ||
                         "Where id_empleado IN ( " || wempleados || " )"; 
       let stmt_delete = TRIM(stmt_delete);
       execute immediate stmt_delete;
     End If;
-
+	
+	-- let error_num = 0;
+	-- let wid_empresa = '';
+	-- let desc_err = '';
     ------------
 
     let w_TipCont = '01-TiemInd'; let w_Period = '04-Quincen'; let w_TipNom = 'O-Ordinari';
@@ -178,21 +181,28 @@ returning char(265);
             "Group by id_empleado " ||
           ") A " ||
           "ON C.rfc = A.id_empleado " ||
-      "Where fec_pago = " || wfec_pago ||
-        " And C.id_empresa = " || wempresa ||
-        " And tipo = " || wtipo || query_condicion ||
-        " And (c1<>'26' And c2<>'26' And c3<>'26' And c4<>'26' And c5<>'26' And c6<>'26' And c7<>'26' And c8<>'26' And c9<>'26' And c10<>'26' " ||
+      "Where fec_pago = '" || wfec_pago || "' " ||
+        " And C.id_empresa = '" || wempresa || "' "||
+        " And tipo = '" || wtipo || "' " || query_condicion || " " ||
+        "And (c1<>'26' And c2<>'26' And c3<>'26' And c4<>'26' And c5<>'26' And c6<>'26' And c7<>'26' And c8<>'26' And c9<>'26' And c10<>'26' " ||
         "And c11<>'26' And c12<>'26' And c13<>'26' And c14<>'26' And c15<>'26' And c16<>'26' And c17<>'26' And c18<>'26' And c19<>'26' And c20<>'26' " ||
         "And c21<>'26' And c22<>'26' And c23<>'26' And c24<>'26' And c25<>'26' And c26<>'26' And c27<>'26' And c28<>'26' And c29<>'26' And c30<>'26' " ||
         "And c31<>'26' And c32<>'26' And c33<>'26' And c34<>'26' And c35<>'26' And c36<>'26' And c37<>'26' And c38<>'26' And c39<>'26' And c40<>'26') " ||
-        "order by 2 " ||
-      "ON EXCEPTION set "|| error_num || --  <---Variables de error
-        " return 'error en  ---> ' " || w_cont ||" ' ' || wemp || ' ' "|| error_num ||" with resume;" ||
-        " let "|| wnum_linea ||" = " || wnum_linea + 1 || "; "||
-        " Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) " ||
-        "values (" || wnum_linea || ", " || wid_empresa || " , || wemp || ,'Error-'"|| desc_err ||" ':' "|| error_num ||" '-emp:' || wemp || '-Cons:' " || wnum_cons2 ||");" ||
-      " END EXCEPTION WITH RESUME";
-
+        "order by 2 ";
+      -- "ON EXCEPTION set "|| error_num || --  <---Variables de error
+        -- " return 'error en  ---> ' " || w_cont ||" ' ' || wemp || ' ' "|| error_num ||" with resume;" ||
+        -- " let "|| wnum_linea ||" = " || wnum_linea + 1 || "; "||
+        -- " Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) " ||
+        -- "values (" || wnum_linea || ", " || wid_empresa || " , || wemp || ,'Error-'"|| desc_err ||" ':' "|| error_num ||" '-emp:' || wemp || '-Cons:' " || wnum_cons2 ||");" ||
+      -- " END EXCEPTION WITH RESUME";
+	  
+		-- "ON EXCEPTION set  error_num "|| --  <---Variables de error
+        -- " return 'error en  ---> ' || w_cont ||' ' || wemp || ' ' || error_num || with resume;" ||
+        -- " let wnum_linea = wnum_linea + 1; "||
+        -- " Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) " ||
+        -- "values ( wnum_linea , wid_empresa , wemp ,'Error-'|| desc_err || ':' || error_num || '-emp:' || wemp || '-Cons:'  || wnum_cons2 ||);" ||
+		-- " END EXCEPTION WITH RESUME ";
+		
         let _query_principal = TRIM(_query_principal);
         Prepare stmt_qry_principal From _query_principal;
         Declare query_principal_cursor cursor FOR stmt_qry_principal;
@@ -210,7 +220,7 @@ returning char(265);
             wpagaduria, wcp;
 
             If (SQLCODE != 100) Then
-
+			
               return 'llevo lay---> ' || w_cont||' '||wemp  with resume;
 
               let wnum_cons2 = wnum_cons2 + 1;
@@ -446,7 +456,7 @@ returning char(265);
 
               let desc_err = 'E01';
 
-              Insert Into valida_timbrado_mejoras_query (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
+              --Insert Into valida_timbrado_mejoras_query (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
 
               ---let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || wfec_pagox || 'T00:00:00' || '@' || '99' || '@' || wperc || '@' || wdeduc || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
               let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || substr(wfec_pagox,1,10) || 'T' || substr(wfec_pagox,12,19) || '@' || '99' || '@' || wperc || '@' || wdeduc || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
@@ -554,7 +564,7 @@ returning char(265);
                   AND a.fec_pago = a.fec_imputacion -- * PAGO CORRIENTE
                   AND a.id_empresa = wempresa;
 
-                If (wBanderaEmpleado Is Not NULL) Then --wbandera01 = 1 Then
+                If (wBanderaEmpleado Is Not Null) Then --wbandera01 = 1 Then
                   let desc_err = 'NOE inf_rl102';
                 Else
                   let wdiaantig = "999";
@@ -1451,7 +1461,7 @@ returning char(265);
                   EXIT;
             End If;
           End While;
-
+ 
     CLOSE query_principal_cursor;
     FREE stmt_qry_principal;
     FREE query_principal_cursor;
