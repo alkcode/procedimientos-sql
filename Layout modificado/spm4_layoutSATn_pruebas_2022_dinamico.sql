@@ -97,7 +97,7 @@ returning char(265);
     Select fec_inicio,fec_fin Into wfec_inicio,wfec_fin
     From m4sys_hist_pagas where fec_paga=wfec_pago;
 
-    let wdescrip = 'Pago de nÃ³mina';
+    let wdescrip = 'Pago de nómina';
 
     If wfec_pago = '15/01/2019' Then
       delete timb_cons20 where fec_pago = '15/01/2019' and empresa = wempresa;
