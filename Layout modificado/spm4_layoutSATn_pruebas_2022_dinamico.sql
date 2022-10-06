@@ -70,28 +70,37 @@ returning char(265);
        -------------Comparamos si es que hay valores en el parametro empleado
     If Length(wempleados) = 0 Then
       let query_condicion='';
+	  
+      -- Drop Table info_satn;
 
-      Drop Table info_satn;
+      -- Create Table info_satn
+      -- (num_linea integer,
+      -- id_empresa varchar(02),
+      -- id_empleado varchar(10),
+      -- linea char(500)) fragment by round robin in bdbase,bdhist;
+      -- Revoke all On info_satn From "public";   
+
+    Else
+      let query_condicion = " And C.rfc in (" || wempleados ||") ";
+
+      -- let stmt_delete = "Delete From info_satn " ||
+                        -- "Where id_empleado IN ( " || wempleados || " )"; 
+      -- let stmt_delete = TRIM(stmt_delete);
+      -- execute immediate stmt_delete;
+    End If;
+	
+	Drop Table info_satn;
 
       Create Table info_satn
       (num_linea integer,
       id_empresa varchar(02),
       id_empleado varchar(10),
       linea char(500)) fragment by round robin in bdbase,bdhist;
-      Revoke all On info_satn From "public";   
-
-    Else
-      let query_condicion = " And C.rfc in (" || wempleados ||") ";
-
-      let stmt_delete = "Delete From info_satn " ||
-                        "Where id_empleado IN ( " || wempleados || " )"; 
-      let stmt_delete = TRIM(stmt_delete);
-      execute immediate stmt_delete;
-    End If;
+      Revoke all On info_satn From "public";
 	
+	-- let desc_err = '';
 	-- let error_num = 0;
 	-- let wid_empresa = '';
-	-- let desc_err = '';
     ------------
 
     let w_TipCont = '01-TiemInd'; let w_Period = '04-Quincen'; let w_TipNom = 'O-Ordinari';
@@ -221,6 +230,13 @@ returning char(265);
 
             If (SQLCODE != 100) Then
 			
+			-- ON EXCEPTION set error_num
+				-- return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
+				-- let wnum_linea = wnum_linea + 1;
+				-- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea)
+				-- values (wnum_linea,wid_empresa,wemp,'Error-'||desc_err||':'||error_num|| '-emp:'||wemp||'-Cons:'||wnum_cons2);
+			-- END EXCEPTION WITH RESUME;
+
               return 'llevo lay---> ' || w_cont||' '||wemp  with resume;
 
               let wnum_cons2 = wnum_cons2 + 1;
@@ -456,10 +472,13 @@ returning char(265);
 
               let desc_err = 'E01';
 
-              --Insert Into valida_timbrado_mejoras_query (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
-
+              --Insert Into valida_timbrado_agui_jl (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
+				
+				If wdeduc = 0.00 Then
+					let wdeduc = '';
+				End If;
               ---let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || wfec_pagox || 'T00:00:00' || '@' || '99' || '@' || wperc || '@' || wdeduc || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
-              let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || substr(wfec_pagox,1,10) || 'T' || substr(wfec_pagox,12,19) || '@' || '99' || '@' || wperc || '@' || wdeduc || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
+              let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || substr(wfec_pagox,1,10) || 'T' || substr(wfec_pagox,12,19) || '@' || '99' || '@' || wperc || '@' || NVL(wdeduc,'') || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
 
               let wnum_linea = wnum_linea + 1;
               let wnum_lini = wnum_linea;
@@ -716,15 +735,15 @@ returning char(265);
               let desc_err = "NOE DatosPago06";
               let desc_err = "NOE Arma"||"-"||wforpago||"-"||wbanco||"-"||wcuenta;
 
-              let cadNOEa = 'CNR'||'@'|| w_TipNom1 || '@' || substr(wfec_finx,1,10) || '@' || wfecha_ini_ts || '@' || substr(wfec_finx,1,10) || '@' || wdias || '@' || wperc || '@' || wdeduc || '@0.00@' || wcurp || '@' || trim(wnumero_ss) || '@' || substr(wfec_alta2,1,10) || '@' || trim(wantigf) || '@' || w_TipCont1 ||'@'|| wsindl_c || '@01@02@' || wemp || '@';
+              let cadNOEa = 'CNR'||'@'|| w_TipNom1 || '@' || substr(wfec_finx,1,10) || '@' || wfecha_ini_ts || '@' || substr(wfec_finx,1,10) || '@' || wdias || '@' || wperc || '@' || NVL(wdeduc,'') || '@0.00@' || wcurp || '@' || trim(wnumero_ss) || '@' || substr(wfec_alta2,1,10) || '@' || trim(wantigf) || '@' || w_TipCont1 ||'@'|| wsindl_c || '@01@02@' || wemp || '@';
               let cadNOEb = trim(wdserv) || '@' || trim(wd2puesto) || '@1@' || w_Period1 ||'@'||  trim(wbanco_c) ||'@'|| wcuenta || '@@0.00@' || westado_c || '@';
               let wnum_linea=wnum_linea+1;
               Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEa)||trim(cadNOEb));
-              let cadNOEc = 'CNR2'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@' || trim(wid_nivel_wid_grupo_grado_nivel) || '/' || trim(wid_sub_nivel_wid_integracion) || '@' || trim(wid_zona) || '/0' || '@' || trim(wantig_anio) || '@' || trim(wantig_meses) || '@' || trim(wantig_dias) || '@' || wfec_alta_empleado || '@' || wsem_trabajadas || '@'; --|| wfec_alta2 wfec_alta_empleado || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
+              let cadNOEc = 'OTROS'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@' || trim(wid_nivel_wid_grupo_grado_nivel) || '/' || trim(wid_sub_nivel_wid_integracion) || '@' || trim(wid_zona) || '/0' || '@' || trim(wantig_anio) || '@' || trim(wantig_meses) || '@' || trim(wantig_dias) || '@' || wfec_alta_empleado || '@' || wsem_trabajadas || '@'; --|| wfec_alta2 wfec_alta_empleado || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
               let wnum_linea=wnum_linea+1;
               Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEc));
 
-              let cadenaD01= 'CN@' || "84111505@1@" || 'ACT@' || trim(wdescrip) || '@' || wperc || '@' || wperc || '@' || wdeduc ||'@@';
+              let cadenaD01= 'CN@' || "84111505@1@" || 'ACT@' || trim(wdescrip) || '@' || wperc || '@' || wperc || '@' || NVL(wdeduc,'') ||'@@';
               let wnum_linea=wnum_linea+1;
               Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaD01);
 
@@ -1207,11 +1226,16 @@ returning char(265);
               If wc38='09' and wi38 > 0 Then Call GenNOHn(wemp,wfec_pago,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea; End If;
               If wc39='09' and wi39 > 0 Then Call GenNOHn(wemp,wfec_pago,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea; End If;
               If wc40='09' and wi40 > 0 Then Call GenNOHn(wemp,wfec_pago,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea; End If;      
-
-              let cadenaQ = 'CND@' || wimporte || '@'  || wispt;
-              let wnum_linea=wnum_linea+1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
-
+				
+				--------------
+				If wimporte = 0 Then
+				
+				Else
+				  let cadenaQ = 'CND@' || wimporte || '@'  || wispt;
+				  let wnum_linea=wnum_linea+1;
+				  Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
+				End If;
+				----------
               If wp1 = 'D' Then
                 If wi1 != 0 and flg1 = 0 Then
                   Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
@@ -1468,7 +1492,7 @@ returning char(265);
 
 
     SYSTEM "echo unload to 'Archivo.txt' > sql01.sql";
-    SYSTEM "echo select linea from info_satn order by num_linea >> sql01.sql";
+	SYSTEM "echo select linea from info_satn order by num_linea >> sql01.sql";
     SYSTEM "dbaccess m4prod sql01.sql";
     SYSTEM "sed '1,$s/|//g' Archivo.txt > Archivo1.txt";
     SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT_2022.txt";
