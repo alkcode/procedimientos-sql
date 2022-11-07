@@ -60,7 +60,7 @@ returning char(265);
 
     --set debug file to 'prueba_alek_mq.log';
     --trace on;
-      
+
    let wemp=' '; let w_cont=1; let wconse=1; let wzero=0.0;
 
    --let wfec_pagox=today;
@@ -89,14 +89,14 @@ returning char(265);
       -- execute immediate stmt_delete;
     End If;
 	
-	Drop Table info_satn;
+	-- Drop Table info_satn;
 
-      Create Table info_satn
-      (num_linea integer,
-      id_empresa varchar(02),
-      id_empleado varchar(10),
-      linea char(500)) fragment by round robin in bdbase,bdhist;
-      Revoke all On info_satn From "public";
+      -- Create Table info_satn
+      -- (num_linea integer,
+      -- id_empresa varchar(02),
+      -- id_empleado varchar(10),
+      -- linea char(500)) fragment by round robin in bdbase,bdhist;
+      -- Revoke all On info_satn From "public";
 	
 	-- let desc_err = '';
 	-- let error_num = 0;
@@ -114,7 +114,7 @@ returning char(265);
     If wfec_pago = '15/01/2019' Then
       delete timb_cons20 where fec_pago = '15/01/2019' and empresa = wempresa;
       let wnum_consi = 01;
-      Insert Into timb_cons20 values(wempresa,'000000',wnum_consi, 0, 00.00, wfec_pago, wfec_pagox);
+      -- Insert Into timb_cons20 values(wempresa,'000000',wnum_consi, 0, 00.00, wfec_pago, wfec_pagox);
     Else
       let wnum_consv = 0;
       Select count(*) Into wnum_consv
@@ -136,7 +136,7 @@ returning char(265);
       let wnum_consi = wnum_consi + 1;
       let wnum_cons2 = wnum_consi;
 
-      Insert Into timb_cons20 values(wempresa, w_NomDes,wnum_consi, 0, wnum_consv, wfec_pago, wfec_pagox);
+      -- Insert Into timb_cons20 values(wempresa, w_NomDes,wnum_consi, 0, wnum_consv, wfec_pago, wfec_pagox);
     End If;
 
     let wramo    = 637;
@@ -227,6 +227,7 @@ returning char(265);
             wp31,wc31,wi31,wp32,wc32,wi32,wp33,wc33,wi33,wp34,wc34,wi34,wp35,wc35,wi35,wp36,wc36,wi36,wp37,wc37,wi37,wp38,wc38,wi38,wp39,wc39,wi39,wp40,wc40,wi40,
             wcurp,wnumero_ss,wid_legal,wnombre2, wdpuesto, wdserv, wsem_trabajadas,wantig_anio, wantig_meses, wantig_dias,
             wpagaduria, wcp;
+			
 
             If (SQLCODE != 100) Then
 			
@@ -482,17 +483,17 @@ returning char(265);
 
               let wnum_linea = wnum_linea + 1;
               let wnum_lini = wnum_linea;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE01);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE01);
 
               let cadenaC = 'EM@ISS6001015A3@Instituto de Seguridad y Servicios Sociales de los Trabajadores del Estado';
 
               let wnum_linea = wnum_linea + 1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaC);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaC);
 
               let cadenaC2 = 'CNE@603@@' || wramo || wpagaduria || '@@@';
 
               let wnum_linea = wnum_linea + 1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaC2);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaC2);
 
               Select nss, curp, filiacion Into wnumero_ss_bmex, wcurp_bmex, wid_legal_bmex
               From m4_inf_bmex
@@ -532,7 +533,7 @@ returning char(265);
               let wnum_linea = wnum_linea + 1;
 
               let cadenaE02 = 'RC@'||wid_legal||'@'||trim(wnombre)||'@P01';
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE02);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE02);
 
 
               -- Select porcent Into wporcent From porc_empn Where id_empleado=wemp;   Esta variable no se usa
@@ -738,25 +739,25 @@ returning char(265);
               let cadNOEa = 'CNR'||'@'|| w_TipNom1 || '@' || substr(wfec_finx,1,10) || '@' || wfecha_ini_ts || '@' || substr(wfec_finx,1,10) || '@' || wdias || '@' || wperc || '@' || NVL(wdeduc,'') || '@0.00@' || wcurp || '@' || trim(wnumero_ss) || '@' || substr(wfec_alta2,1,10) || '@' || trim(wantigf) || '@' || w_TipCont1 ||'@'|| wsindl_c || '@01@02@' || wemp || '@';
               let cadNOEb = trim(wdserv) || '@' || trim(wd2puesto) || '@1@' || w_Period1 ||'@'||  trim(wbanco_c) ||'@'|| wcuenta || '@@0.00@' || westado_c || '@';
               let wnum_linea=wnum_linea+1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEa)||trim(cadNOEb));
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEa)||trim(cadNOEb));
               let cadNOEc = 'OTROS'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@' || trim(wid_nivel_wid_grupo_grado_nivel) || '/' || trim(wid_sub_nivel_wid_integracion) || '@' || trim(wid_zona) || '/0' || '@' || trim(wantig_anio) || '@' || trim(wantig_meses) || '@' || trim(wantig_dias) || '@' || wfec_alta_empleado || '@' || wsem_trabajadas || '@'; --|| wfec_alta2 wfec_alta_empleado || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
               let wnum_linea=wnum_linea+1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEc));
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEc));
 
               let cadenaD01= 'CN@' || "84111505@1@" || 'ACT@' || trim(wdescrip) || '@' || wperc || '@' || wperc || '@' || NVL(wdeduc,'') ||'@@';
               let wnum_linea=wnum_linea+1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaD01);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaD01);
 
               let cadenaK = 'CNP@' || wperc || '@@@' || wperc || '@0.00' || '@@@@@@@@@@';
               let wnum_linea=wnum_linea+1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaK);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaK);
 
               If wp1 = 'P' Then
                 If wi1 != 0 and flg1 = 0 Then
-                  Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg1 = 3 Then
-                    Call GenLinSATne(wemp,wp1,wi1,wc1,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp1,wi1,wc1,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg2 = 2;
                   End If;
                 End If;
@@ -764,10 +765,10 @@ returning char(265);
 
               If wp2 = 'P' Then
                 If wi2 != 0 and flg2 = 0 Then
-                  Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg2 = 3 Then
-                    Call GenLinSATne(wemp,wp2,wi2,wc2,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp2,wi2,wc2,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg3 = 2;
                   End If;
                 End If;
@@ -775,10 +776,10 @@ returning char(265);
 
               If wp3 = 'P' Then
                 If wi3 != 0 and flg3 = 0 Then
-                  Call GenLinSATn(wemp,wp3,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp3,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg3 = 3 Then
-                    Call GenLinSATne(wemp,wp3,wi3,wc3,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp3,wi3,wc3,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg4 = 2;
                   End If;
                 End If;
@@ -786,10 +787,10 @@ returning char(265);
 
               If wp4 = 'P' Then
                 If wi4 != 0 and flg4 = 0 Then
-                  Call GenLinSATn(wemp,wp4,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp4,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg4 = 3 Then
-                    Call GenLinSATne(wemp,wp4,wi4,wc4,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp4,wi4,wc4,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg5 = 2;
                   End If;
                 End If;
@@ -797,10 +798,10 @@ returning char(265);
 
               If wp5 = 'P' Then
                 If wi5 != 0 and flg5 = 0 Then
-                  Call GenLinSATn(wemp,wp5,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp5,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg5 = 3 Then
-                    Call GenLinSATne(wemp,wp5,wi5,wc5,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp5,wi5,wc5,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg6 = 2;
                   End If;
                 End If;
@@ -808,10 +809,10 @@ returning char(265);
 
               If wp6 = 'P' Then
                 If wi6 != 0 and flg6 = 0 Then
-                  Call GenLinSATn(wemp,wp6,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp6,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg6 = 3 Then
-                    Call GenLinSATne(wemp,wp6,wi6,wc6,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp6,wi6,wc6,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg7 = 2;
                   End If;
                 End If;
@@ -819,10 +820,10 @@ returning char(265);
 
               If wp7 = 'P' Then
                 If wi7 != 0 and flg7 = 0 Then
-                  Call GenLinSATn(wemp,wp7,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp7,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg7 = 3 Then
-                    Call GenLinSATne(wemp,wp7,wi7,wc7,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp7,wi7,wc7,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg8 = 2;
                   End If;
                 End If;
@@ -830,10 +831,10 @@ returning char(265);
 
               If wp8 = 'P' Then
                 If wi8 != 0 and flg8 = 0 Then
-                  Call GenLinSATn(wemp,wp8,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp8,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg8 = 3 Then
-                    Call GenLinSATne(wemp,wp8,wi8,wc8,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp8,wi8,wc8,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg9 = 2;
                   End If;
                 End If;
@@ -841,10 +842,10 @@ returning char(265);
 
               If wp9 = 'P' Then
                 If wi9 != 0 and flg9 = 0 Then
-                  Call GenLinSATn(wemp,wp9,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp9,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg9 = 3 Then
-                    Call GenLinSATne(wemp,wp9,wi9,wc9,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp9,wi9,wc9,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg10 = 2;
                   End If;
                 End If;
@@ -852,10 +853,10 @@ returning char(265);
 
               If wp10 = 'P' Then
                 If wi10 != 0 and flg10 = 0 Then
-                  Call GenLinSATn(wemp,wp10,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp10,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg10 = 3 Then
-                    Call GenLinSATne(wemp,wp10,wi10,wc10,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp10,wi10,wc10,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg11 = 2;
                   End If;
                 End If;
@@ -863,10 +864,10 @@ returning char(265);
 
               If wp11 = 'P' Then
                 If wi11 != 0 and flg11 = 0 Then
-                  Call GenLinSATn(wemp,wp11,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp11,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg11 = 3 Then
-                    Call GenLinSATne(wemp,wp11,wi11,wc11,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp11,wi11,wc11,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg12 = 2;
                   End If;
                 End If;
@@ -874,10 +875,10 @@ returning char(265);
 
               If wp12 = 'P' Then
                 If wi12 != 0 and flg12 = 0 Then
-                  Call GenLinSATn(wemp,wp12,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp12,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
                 Else 
                   If flg12 = 3 Then
-                    Call GenLinSATne(wemp,wp12,wi12,wc12,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp12,wi12,wc12,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg13 = 2;
                   End If;
                 End If;
@@ -885,10 +886,10 @@ returning char(265);
 
               If wp13 = 'P' Then
                 If wi13 != 0 and flg13 = 0 Then
-                  Call GenLinSATn(wemp,wp13,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp13,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg13 = 3 Then
-                    Call GenLinSATne(wemp,wp13,wi13,wc13,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp13,wi13,wc13,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg14 = 2;
                   End If;
                 End If;
@@ -896,10 +897,10 @@ returning char(265);
 
               If wp14 = 'P' Then
                 If wi14 != 0 and flg14 = 0 Then
-                  Call GenLinSATn(wemp,wp14,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp14,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg14 = 3 Then
-                    Call GenLinSATne(wemp,wp14,wi14,wc14,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp14,wi14,wc14,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg15 = 2;
                   End If;
                 End If;
@@ -907,10 +908,10 @@ returning char(265);
 
               If wp15 = 'P' Then
                 If wi15 != 0 and flg15 = 0 Then
-                  Call GenLinSATn(wemp,wp15,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp15,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg15 = 3 Then
-                    Call GenLinSATne(wemp,wp15,wi15,wc15,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp15,wi15,wc15,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg16 = 2;
                   End If;
                 End If;
@@ -918,10 +919,10 @@ returning char(265);
 
               If wp16 = 'P' Then
                 If wi16 != 0 and flg16 = 0 Then
-                  Call GenLinSATn(wemp,wp16,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp16,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg16 = 3 Then
-                    Call GenLinSATne(wemp,wp16,wi16,wc16,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp16,wi16,wc16,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg17 = 2;
                   End If;
                 End If;
@@ -929,10 +930,10 @@ returning char(265);
 
               If wp17 = 'P' Then
                 If wi17 != 0 and flg17 = 0 Then
-                  Call GenLinSATn(wemp,wp17,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp17,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg17 = 3 Then
-                    Call GenLinSATne(wemp,wp17,wi17,wc17,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp17,wi17,wc17,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg18 = 2;
                   End If;
                 End If;
@@ -940,10 +941,10 @@ returning char(265);
 
               If wp18 = 'P' Then
                 If wi18 != 0 and flg18 = 0 Then
-                  Call GenLinSATn(wemp,wp18,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp18,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg18 = 3 Then
-                    Call GenLinSATne(wemp,wp18,wi18,wc18,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp18,wi18,wc18,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg19 = 2;
                   End If;
                 End If;
@@ -951,10 +952,10 @@ returning char(265);
 
               If wp19 = 'P' Then
                 If wi19 != 0 and flg19 = 0 Then
-                  Call GenLinSATn(wemp,wp19,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp19,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg19 = 3 Then
-                    Call GenLinSATne(wemp,wp19,wi19,wc19,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp19,wi19,wc19,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg20 = 2;
                   End If;
                 End If;
@@ -962,10 +963,10 @@ returning char(265);
 
               If wp20 = 'P' Then
                 If wi20 != 0 and flg20 = 0 Then
-                  Call GenLinSATn(wemp,wp20,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp20,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg20 = 3 Then
-                    Call GenLinSATne(wemp,wp20,wi20,wc20,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp20,wi20,wc20,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg21 = 2;
                   End If;
                 End If;
@@ -973,10 +974,10 @@ returning char(265);
 
               If wp21 = 'P' Then
                 If wi21 != 0 and flg21 = 0 Then
-                  Call GenLinSATn(wemp,wp21,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp21,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg21 = 3 Then
-                    Call GenLinSATne(wemp,wp21,wi21,wc21,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp21,wi21,wc21,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg22 = 2;
                   End If;
                 End If;
@@ -984,10 +985,10 @@ returning char(265);
 
               If wp22 = 'P' Then
                 If wi22 != 0 and flg22 = 0 Then
-                  Call GenLinSATn(wemp,wp22,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp22,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg22 = 3 Then
-                    Call GenLinSATne(wemp,wp22,wi22,wc22,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp22,wi22,wc22,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg23 = 2;
                   End If;
                 End If;
@@ -995,10 +996,10 @@ returning char(265);
 
               If wp23 = 'P' Then
                 If wi23 != 0 and flg23 = 0 Then
-                  Call GenLinSATn(wemp,wp23,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp23,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg23 = 3 Then
-                    Call GenLinSATne(wemp,wp23,wi23,wc23,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp23,wi23,wc23,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg24 = 2;
                   End If;
                 End If;
@@ -1006,10 +1007,10 @@ returning char(265);
 
               If wp24 = 'P' Then
                 If wi24 != 0 and flg24 = 0 Then 
-                  Call GenLinSATn(wemp,wp24,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp24,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg24 = 3 Then
-                  Call GenLinSATne(wemp,wp24,wi24,wc24,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATne(wemp,wp24,wi24,wc24,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
                   let flg25 = 2;
                   End If;
                 End If;
@@ -1017,10 +1018,10 @@ returning char(265);
 
               If wp25 = 'P' Then
                 If wi25 != 0 and flg25 = 0 Then
-                  Call GenLinSATn(wemp,wp25,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp25,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg25 = 3 Then
-                    Call GenLinSATne(wemp,wp25,wi25,wc25,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp25,wi25,wc25,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg26 = 2;
                   End If;
                 End If;
@@ -1028,10 +1029,10 @@ returning char(265);
 
               If wp26 = 'P' Then
                 If wi26 != 0 and flg26 = 0 Then 
-                  Call GenLinSATn(wemp,wp26,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp26,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg26 = 3 Then
-                    Call GenLinSATne(wemp,wp26,wi26,wc26,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp26,wi26,wc26,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg27 = 2;
                   End If;
                 End If;
@@ -1039,10 +1040,10 @@ returning char(265);
 
               If wp27 = 'P' Then
                 If wi27 != 0 and flg27 = 0 Then
-                  Call GenLinSATn(wemp,wp27,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp27,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg27 = 3 Then
-                    Call GenLinSATne(wemp,wp27,wi27,wc27,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp27,wi27,wc27,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg28 = 2;
                   End If;
                 End If;
@@ -1050,10 +1051,10 @@ returning char(265);
 
               If wp28 = 'P' Then
                 If wi28 != 0 and flg28 = 0 Then
-                  Call GenLinSATn(wemp,wp28,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp28,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg28 = 3 Then
-                    Call GenLinSATne(wemp,wp28,wi28,wc28,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp28,wi28,wc28,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg29 = 2;
                   End If;
                 End If;
@@ -1061,10 +1062,10 @@ returning char(265);
 
               If wp29 = 'P' Then
                 If wi29 != 0 and flg29 = 0 Then
-                  Call GenLinSATn(wemp,wp29,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp29,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg29 = 3 Then
-                    Call GenLinSATne(wemp,wp29,wi29,wc29,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp29,wi29,wc29,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg30 = 2;
                   End If;
                 End If; 
@@ -1072,10 +1073,10 @@ returning char(265);
 
               If wp30 = 'P' Then
                 If wi30 != 0 and flg30 = 0 Then
-                  Call GenLinSATn(wemp,wp30,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp30,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
                 Else If
                   flg30 = 3 Then
-                    Call GenLinSATne(wemp,wp30,wi30,wc30,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp30,wi30,wc30,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg31 = 2;
                   End If;
                 End If;
@@ -1083,10 +1084,10 @@ returning char(265);
 
               If wp31 = 'P' Then
                 If wi31 != 0 and flg31 = 0 Then
-                  Call GenLinSATn(wemp,wp31,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp31,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg31 = 3 Then
-                    Call GenLinSATne(wemp,wp31,wi31,wc31,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp31,wi31,wc31,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg32 = 2;
                   End If;
                 End If;
@@ -1094,10 +1095,10 @@ returning char(265);
 
               If wp32 = 'P' Then
                 If wi32 != 0 and flg32 = 0 Then
-                  Call GenLinSATn(wemp,wp32,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp32,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg32 = 3 Then
-                    Call GenLinSATne(wemp,wp32,wi32,wc32,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp32,wi32,wc32,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg33 = 2;
                   End If;
                 End If;
@@ -1105,10 +1106,10 @@ returning char(265);
 
               If wp33 = 'P' Then
                 If wi33 != 0 and flg33 = 0 Then
-                  Call GenLinSATn(wemp,wp33,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp33,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg33 = 3 Then
-                    Call GenLinSATne(wemp,wp33,wi33,wc33,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp33,wi33,wc33,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg34 = 2;
                   End If;
                 End If;
@@ -1116,10 +1117,10 @@ returning char(265);
 
               If wp34 = 'P' Then
                 If wi34 != 0 and flg34 = 0 Then
-                  Call GenLinSATn(wemp,wp34,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp34,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg34 = 3 Then
-                    Call GenLinSATne(wemp,wp34,wi34,wc34,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp34,wi34,wc34,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg35 = 2;
                   End If;
                 End If;
@@ -1127,10 +1128,10 @@ returning char(265);
 
               If wp35 = 'P' Then
                 If wi35 != 0 and flg35 = 0 Then
-                  Call GenLinSATn(wemp,wp35,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp35,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg35 = 3 Then
-                    Call GenLinSATne(wemp,wp35,wi35,wc35,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp35,wi35,wc35,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg36 = 2;
                   End If;
                 End If;
@@ -1138,10 +1139,10 @@ returning char(265);
 
               If wp36 = 'P' Then
                 If wi36 != 0 and flg36 = 0 Then
-                  Call GenLinSATn(wemp,wp36,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp36,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg36 = 3 Then
-                    Call GenLinSATne(wemp,wp36,wi36,wc36,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp36,wi36,wc36,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg37 = 2;
                   End If;
                 End If;
@@ -1149,10 +1150,10 @@ returning char(265);
 
               If wp37 = 'P' Then
                 If wi37 != 0 and flg37 = 0 Then
-                  Call GenLinSATn(wemp,wp37,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp37,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg37 = 3 Then
-                    Call GenLinSATne(wemp,wp37,wi37,wc37,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp37,wi37,wc37,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg38 = 2;
                   End If;
                 End If;
@@ -1160,10 +1161,10 @@ returning char(265);
 
               If wp38 = 'P' Then
                 If wi38 != 0 and flg38 = 0 Then
-                  Call GenLinSATn(wemp,wp38,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp38,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg38 = 3 Then
-                    Call GenLinSATne(wemp,wp38,wi38,wc38,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp38,wi38,wc38,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg39 = 2;
                   End If;
                 End If;
@@ -1171,10 +1172,10 @@ returning char(265);
 
               If wp39 = 'P' Then
                 If wi39 != 0 and flg39 = 0 Then
-                  Call GenLinSATn(wemp,wp39,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp39,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg39 = 3 Then
-                    Call GenLinSATne(wemp,wp39,wi39,wc39,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
+                    -- Call GenLinSATne(wemp,wp39,wi39,wc39,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg40 = 2;
                   End If;
                 End If;
@@ -1182,50 +1183,50 @@ returning char(265);
 
               If wp40 = 'P' Then
                 If wi40 != 0 and flg40 = 0 Then 
-                  Call GenLinSATn(wemp,wp40,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp40,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
                 End If; 
               End If;
 
-              If wc1='09' and wi1 > 0 Then Call GenNOHn(wemp,wfec_pago,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc2='09' and wi2 > 0 Then Call GenNOHn(wemp,wfec_pago,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc3='09' and wi3 > 0 Then Call GenNOHn(wemp,wfec_pago,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc4='09' and wi4 > 0 Then Call GenNOHn(wemp,wfec_pago,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc5='09' and wi5 > 0 Then Call GenNOHn(wemp,wfec_pago,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc6='09' and wi6 > 0 Then Call GenNOHn(wemp,wfec_pago,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc7='09' and wi7 > 0 Then Call GenNOHn(wemp,wfec_pago,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc8='09' and wi8 > 0 Then Call GenNOHn(wemp,wfec_pago,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc9='09' and wi9 > 0 Then Call GenNOHn(wemp,wfec_pago,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc10='09' and wi10 > 0 Then Call GenNOHn(wemp,wfec_pago,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc11='09' and wi11 > 0 Then Call GenNOHn(wemp,wfec_pago,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc12='09' and wi12 > 0 Then Call GenNOHn(wemp,wfec_pago,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc13='09' and wi13 > 0 Then Call GenNOHn(wemp,wfec_pago,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc14='09' and wi14 > 0 Then Call GenNOHn(wemp,wfec_pago,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc15='09' and wi15 > 0 Then Call GenNOHn(wemp,wfec_pago,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc16='09' and wi16 > 0 Then Call GenNOHn(wemp,wfec_pago,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc17='09' and wi17 > 0 Then Call GenNOHn(wemp,wfec_pago,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc18='09' and wi18 > 0 Then Call GenNOHn(wemp,wfec_pago,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc19='09' and wi19 > 0 Then Call GenNOHn(wemp,wfec_pago,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc20='09' and wi20 > 0 Then Call GenNOHn(wemp,wfec_pago,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc21='09' and wi21 > 0 Then Call GenNOHn(wemp,wfec_pago,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc22='09' and wi22 > 0 Then Call GenNOHn(wemp,wfec_pago,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc23='09' and wi23 > 0 Then Call GenNOHn(wemp,wfec_pago,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc24='09' and wi24 > 0 Then Call GenNOHn(wemp,wfec_pago,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc25='09' and wi25 > 0 Then Call GenNOHn(wemp,wfec_pago,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc26='09' and wi26 > 0 Then Call GenNOHn(wemp,wfec_pago,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc27='09' and wi27 > 0 Then Call GenNOHn(wemp,wfec_pago,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc28='09' and wi28 > 0 Then Call GenNOHn(wemp,wfec_pago,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc29='09' and wi29 > 0 Then Call GenNOHn(wemp,wfec_pago,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc30='09' and wi30 > 0 Then Call GenNOHn(wemp,wfec_pago,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc31='09' and wi31 > 0 Then Call GenNOHn(wemp,wfec_pago,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc32='09' and wi32 > 0 Then Call GenNOHn(wemp,wfec_pago,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc33='09' and wi33 > 0 Then Call GenNOHn(wemp,wfec_pago,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc34='09' and wi34 > 0 Then Call GenNOHn(wemp,wfec_pago,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc35='09' and wi35 > 0 Then Call GenNOHn(wemp,wfec_pago,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc36='09' and wi36 > 0 Then Call GenNOHn(wemp,wfec_pago,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc37='09' and wi37 > 0 Then Call GenNOHn(wemp,wfec_pago,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc38='09' and wi38 > 0 Then Call GenNOHn(wemp,wfec_pago,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc39='09' and wi39 > 0 Then Call GenNOHn(wemp,wfec_pago,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea; End If;
-              If wc40='09' and wi40 > 0 Then Call GenNOHn(wemp,wfec_pago,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea; End If;      
+              -- If wc1='09' and wi1 > 0 Then Call GenNOHn(wemp,wfec_pago,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc2='09' and wi2 > 0 Then Call GenNOHn(wemp,wfec_pago,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc3='09' and wi3 > 0 Then Call GenNOHn(wemp,wfec_pago,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc4='09' and wi4 > 0 Then Call GenNOHn(wemp,wfec_pago,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc5='09' and wi5 > 0 Then Call GenNOHn(wemp,wfec_pago,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc6='09' and wi6 > 0 Then Call GenNOHn(wemp,wfec_pago,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc7='09' and wi7 > 0 Then Call GenNOHn(wemp,wfec_pago,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc8='09' and wi8 > 0 Then Call GenNOHn(wemp,wfec_pago,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc9='09' and wi9 > 0 Then Call GenNOHn(wemp,wfec_pago,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc10='09' and wi10 > 0 Then Call GenNOHn(wemp,wfec_pago,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc11='09' and wi11 > 0 Then Call GenNOHn(wemp,wfec_pago,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc12='09' and wi12 > 0 Then Call GenNOHn(wemp,wfec_pago,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc13='09' and wi13 > 0 Then Call GenNOHn(wemp,wfec_pago,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc14='09' and wi14 > 0 Then Call GenNOHn(wemp,wfec_pago,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc15='09' and wi15 > 0 Then Call GenNOHn(wemp,wfec_pago,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc16='09' and wi16 > 0 Then Call GenNOHn(wemp,wfec_pago,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc17='09' and wi17 > 0 Then Call GenNOHn(wemp,wfec_pago,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc18='09' and wi18 > 0 Then Call GenNOHn(wemp,wfec_pago,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc19='09' and wi19 > 0 Then Call GenNOHn(wemp,wfec_pago,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc20='09' and wi20 > 0 Then Call GenNOHn(wemp,wfec_pago,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc21='09' and wi21 > 0 Then Call GenNOHn(wemp,wfec_pago,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc22='09' and wi22 > 0 Then Call GenNOHn(wemp,wfec_pago,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc23='09' and wi23 > 0 Then Call GenNOHn(wemp,wfec_pago,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc24='09' and wi24 > 0 Then Call GenNOHn(wemp,wfec_pago,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc25='09' and wi25 > 0 Then Call GenNOHn(wemp,wfec_pago,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc26='09' and wi26 > 0 Then Call GenNOHn(wemp,wfec_pago,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc27='09' and wi27 > 0 Then Call GenNOHn(wemp,wfec_pago,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc28='09' and wi28 > 0 Then Call GenNOHn(wemp,wfec_pago,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc29='09' and wi29 > 0 Then Call GenNOHn(wemp,wfec_pago,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc30='09' and wi30 > 0 Then Call GenNOHn(wemp,wfec_pago,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc31='09' and wi31 > 0 Then Call GenNOHn(wemp,wfec_pago,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc32='09' and wi32 > 0 Then Call GenNOHn(wemp,wfec_pago,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc33='09' and wi33 > 0 Then Call GenNOHn(wemp,wfec_pago,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc34='09' and wi34 > 0 Then Call GenNOHn(wemp,wfec_pago,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc35='09' and wi35 > 0 Then Call GenNOHn(wemp,wfec_pago,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc36='09' and wi36 > 0 Then Call GenNOHn(wemp,wfec_pago,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc37='09' and wi37 > 0 Then Call GenNOHn(wemp,wfec_pago,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc38='09' and wi38 > 0 Then Call GenNOHn(wemp,wfec_pago,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc39='09' and wi39 > 0 Then Call GenNOHn(wemp,wfec_pago,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea; End If;
+              -- If wc40='09' and wi40 > 0 Then Call GenNOHn(wemp,wfec_pago,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea; End If;      
 				
 				--------------
 				If wimporte = 0 Then
@@ -1233,252 +1234,252 @@ returning char(265);
 				Else
 				  let cadenaQ = 'CND@' || wimporte || '@'  || wispt;
 				  let wnum_linea=wnum_linea+1;
-				  Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
+				  -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
 				End If;
 				----------
               If wp1 = 'D' Then
                 If wi1 != 0 and flg1 = 0 Then
-                  Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp2 = 'D' Then
                 If wi2 != 0 and flg2 = 0 Then
-                  Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp3 = 'D' Then
                 If wi3 != 0 and flg3 = 0 Then
-                  Call GenLinSATn(wemp,wp3,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp3,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp4 = 'D' Then
                 If wi4 != 0 and flg4 = 0 Then
-                  Call GenLinSATn(wemp,wp4,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp4,wi4,wc4,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp5 = 'D' Then
                 If wi5 != 0 and flg5 = 0 Then
-                  Call GenLinSATn(wemp,wp5,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp5,wi5,wc5,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp6 = 'D' Then
                 If wi6 != 0 and flg6 = 0 Then
-                  Call GenLinSATn(wemp,wp6,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp6,wi6,wc6,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp7 = 'D' Then
                 If wi7 != 0 and flg7 = 0 Then
-                  Call GenLinSATn(wemp,wp7,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp7,wi7,wc7,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp8 = 'D' Then
                 If wi8 != 0 and flg8 = 0 Then
-                  Call GenLinSATn(wemp,wp8,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp8,wi8,wc8,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp9 = 'D' Then
                 If wi9 != 0 and flg9 = 0 Then
-                  Call GenLinSATn(wemp,wp9,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp9,wi9,wc9,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp10 = 'D' Then
                 If wi10 != 0 and flg10 = 0 Then
-                  Call GenLinSATn(wemp,wp10,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp10,wi10,wc10,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp11 = 'D' Then
                 If wi11 != 0 and flg11 = 0 Then
-                  Call GenLinSATn(wemp,wp11,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp11,wi11,wc11,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp12 = 'D' Then
                 If wi12 != 0 and flg12 = 0 Then
-                  Call GenLinSATn(wemp,wp12,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp12,wi12,wc12,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp13 = 'D' Then
                 If wi13 != 0 and flg13 = 0 Then
-                  Call GenLinSATn(wemp,wp13,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp13,wi13,wc13,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp14 = 'D' Then
                 If wi14 != 0 and flg14 = 0 Then
-                  Call GenLinSATn(wemp,wp14,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp14,wi14,wc14,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp15 = 'D' Then
                 If wi15 != 0 and flg15 = 0 Then
-                  Call GenLinSATn(wemp,wp15,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp15,wi15,wc15,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp16 = 'D' Then
                 If wi16 != 0 and flg16 = 0 Then
-                  Call GenLinSATn(wemp,wp16,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp16,wi16,wc16,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp17 = 'D' Then
                 If wi17 != 0 and flg17 = 0 Then
-                  Call GenLinSATn(wemp,wp17,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp17,wi17,wc17,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp18 = 'D' Then
                 If wi18 != 0 and flg18 = 0 Then
-                  Call GenLinSATn(wemp,wp18,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp18,wi18,wc18,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp19 = 'D' Then
                 If wi19 != 0 and flg19 = 0 Then
-                  Call GenLinSATn(wemp,wp19,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp19,wi19,wc19,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp20 = 'D' Then
                 If wi20 != 0 and flg20 = 0 Then
-                  Call GenLinSATn(wemp,wp20,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp20,wi20,wc20,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp21 = 'D' Then
                 If wi21 != 0 and flg21 = 0 Then
-                  Call GenLinSATn(wemp,wp21,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp21,wi21,wc21,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp22 = 'D' Then
                 If wi22 != 0 and flg22 = 0 Then
-                  Call GenLinSATn(wemp,wp22,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp22,wi22,wc22,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp23 = 'D' Then
                 If wi23 != 0 and flg23 = 0 Then
-                  Call GenLinSATn(wemp,wp23,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp23,wi23,wc23,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp24 = 'D' Then
                 If wi24 != 0 and flg24 = 0 Then
-                  Call GenLinSATn(wemp,wp24,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp24,wi24,wc24,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp25 = 'D' Then
                 If wi25 != 0 and flg25 = 0 Then
-                  Call GenLinSATn(wemp,wp25,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp25,wi25,wc25,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp26 = 'D' Then
                 If wi26 != 0 and flg26 = 0 Then
-                  Call GenLinSATn(wemp,wp26,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp26,wi26,wc26,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp27 = 'D' Then
                 If wi27 != 0 and flg27 = 0 Then
-                  Call GenLinSATn(wemp,wp27,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp27,wi27,wc27,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp28 = 'D' Then
                 If wi28 != 0 and flg28 = 0 Then
-                  Call GenLinSATn(wemp,wp28,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp28,wi28,wc28,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp29 = 'D' Then
                 If wi29 != 0 and flg29 = 0 Then
-                  Call GenLinSATn(wemp,wp29,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp29,wi29,wc29,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp30 = 'D' Then
                 If wi30 != 0 and flg30 = 0 Then
-                  Call GenLinSATn(wemp,wp30,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp30,wi30,wc30,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp31 = 'D' Then
                 If wi31 != 0 and flg31 = 0 Then
-                  Call GenLinSATn(wemp,wp31,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp31,wi31,wc31,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp32 = 'D' Then
                 If wi32 != 0 and flg32 = 0 Then
-                  Call GenLinSATn(wemp,wp32,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp32,wi32,wc32,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp33 = 'D' Then
                 If wi33 != 0 and flg33 = 0 Then
-                  Call GenLinSATn(wemp,wp33,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp33,wi33,wc33,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp34 = 'D' Then
                 If wi34 != 0 and flg34 = 0 Then
-                  Call GenLinSATn(wemp,wp34,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp34,wi34,wc34,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp35 = 'D' Then
                 If wi35 != 0 and flg35 = 0 Then
-                  Call GenLinSATn(wemp,wp35,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp35,wi35,wc35,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp36 = 'D' Then
                 If wi36 != 0 and flg36 = 0 Then
-                  Call GenLinSATn(wemp,wp36,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp36,wi36,wc36,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp37 = 'D' Then
                 If wi37 != 0 and flg37 = 0 Then
-                  Call GenLinSATn(wemp,wp37,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp37,wi37,wc37,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp38 = 'D' Then
                 If wi38 != 0 and flg38 = 0 Then
-                  Call GenLinSATn(wemp,wp38,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp38,wi38,wc38,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp39 = 'D' Then
                 If wi39 != 0 and flg39 = 0 Then
-                  Call GenLinSATn(wemp,wp39,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp39,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               If wp40 = 'D' Then
                 If wi40 != 0 and flg40 = 0 Then
-                  Call GenLinSATn(wemp,wp40,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
+                  -- Call GenLinSATn(wemp,wp40,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea;
                 End If;
               End If;
 
               let cadNOP = 'NOP@' ||'002'|| '@' || '00001518' || '@' || 'SUBSIDIO PARA EL EMPLEO (EFECTIVAMENTE ENTREGADO AL TRABAJADOR)'||'@0.00'||'@0.00' ||'@@@';
               let wnum_linea=wnum_linea+1;
-              Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadNOP);
+              -- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadNOP);
 
               let w_cont = w_cont + 1;
             Else
@@ -1495,11 +1496,11 @@ returning char(265);
 	SYSTEM "echo select linea from info_satn order by num_linea >> sql01.sql";
     SYSTEM "dbaccess m4prod sql01.sql";
     SYSTEM "sed '1,$s/|//g' Archivo.txt > Archivo1.txt";
-    SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT_2022.txt";
+    SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT2022.txt";
 
     let w_cont = w_cont - 1;
-    Update timb_cons20 set num_consf = wnum_cons2
-    Where empresa = wid_empresa and fec_pago = wfec_pago and fec_crea = wfec_pagox and descripcion = w_NomDes and num_cons = wnum_consi;
+    -- Update timb_cons20 set num_consf = wnum_cons2
+    -- Where empresa = wid_empresa and fec_pago = wfec_pago and fec_crea = wfec_pagox and descripcion = w_NomDes and num_cons = wnum_consi;
 
     return 'Informe --> ' || w_NomDes || '; ' || w_TipCont || '; ' ||w_Period || '; ' ||w_TipNom || '.'with resume;
 End Procedure;
