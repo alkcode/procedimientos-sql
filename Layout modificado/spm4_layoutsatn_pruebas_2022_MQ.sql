@@ -485,7 +485,7 @@ returning char(265);
 
         let desc_err = 'NOE inf_rl01';
 
-        Select First 1
+        Select First 1		--Modificar
           Case 
             When a.id_tipo_tabulador='F' Then a.id_grupo_grado_nivel
             Else a.id_nivel

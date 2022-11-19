@@ -109,7 +109,7 @@ returning char(265);
     Select fec_inicio,fec_fin Into wfec_inicio,wfec_fin
     From m4sys_hist_pagas where fec_paga=wfec_pago;
 
-    let wdescrip = 'Pago de nómina';
+    let wdescrip = 'Pago de nómina'; --Si
 
     If wfec_pago = '15/01/2019' Then
       delete timb_cons20 where fec_pago = '15/01/2019' and empresa = wempresa;
@@ -204,20 +204,21 @@ returning char(265);
         -- " Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) " ||
         -- "values (" || wnum_linea || ", " || wid_empresa || " , || wemp || ,'Error-'"|| desc_err ||" ':' "|| error_num ||" '-emp:' || wemp || '-Cons:' " || wnum_cons2 ||");" ||
       -- " END EXCEPTION WITH RESUME";
-	  
-		-- "ON EXCEPTION set  error_num "|| --  <---Variables de error
-        -- " return 'error en  ---> ' || w_cont ||' ' || wemp || ' ' || error_num || with resume;" ||
-        -- " let wnum_linea = wnum_linea + 1; "||
-        -- " Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) " ||
-        -- "values ( wnum_linea , wid_empresa , wemp ,'Error-'|| desc_err || ':' || error_num || '-emp:' || wemp || '-Cons:'  || wnum_cons2 ||);" ||
-		-- " END EXCEPTION WITH RESUME ";
-		
+
         let _query_principal = TRIM(_query_principal);
         Prepare stmt_qry_principal From _query_principal;
         Declare query_principal_cursor cursor FOR stmt_qry_principal;
         Open query_principal_cursor;
 
           While( 1 = 1 )
+		  
+     	  ON EXCEPTION set error_num
+			return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
+			let wnum_linea = wnum_linea + 1;
+			Insert Into info_satn (num_linea,id_empresa,id_empleado,linea)
+			values (wnum_linea,wid_empresa,wemp,'Error-'||desc_err||':'||error_num|| '-emp:'||wemp||'-Cons:'||wnum_cons2);
+		  END EXCEPTION WITH RESUME;
+			
             Fetch query_principal_cursor
             Into wid_empresa,wemp,wfolio,wliquido,wdeduc,wperc,wnombre,wbanco,wcuenta,wdivgeo,
             wadscripcion, wiserv, wipuesto,
@@ -227,17 +228,9 @@ returning char(265);
             wp31,wc31,wi31,wp32,wc32,wi32,wp33,wc33,wi33,wp34,wc34,wi34,wp35,wc35,wi35,wp36,wc36,wi36,wp37,wc37,wi37,wp38,wc38,wi38,wp39,wc39,wi39,wp40,wc40,wi40,
             wcurp,wnumero_ss,wid_legal,wnombre2, wdpuesto, wdserv, wsem_trabajadas,wantig_anio, wantig_meses, wantig_dias,
             wpagaduria, wcp;
-			
 
             If (SQLCODE != 100) Then
-			
-			-- ON EXCEPTION set error_num
-				-- return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
-				-- let wnum_linea = wnum_linea + 1;
-				-- Insert Into info_satn (num_linea,id_empresa,id_empleado,linea)
-				-- values (wnum_linea,wid_empresa,wemp,'Error-'||desc_err||':'||error_num|| '-emp:'||wemp||'-Cons:'||wnum_cons2);
-			-- END EXCEPTION WITH RESUME;
-
+			  
               return 'llevo lay---> ' || w_cont||' '||wemp  with resume;
 
               let wnum_cons2 = wnum_cons2 + 1;
@@ -523,9 +516,9 @@ returning char(265);
                 let wid_legal = "ERROR_RFC";
               End If;
 
-              --If (wcurp[1,2] = '  ' or wcurp is null or (wcurp != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If;
-              --If (wcurp[1,2] = '  ' or wcurp is null or wcurp != 18 or wcurp matches'*Ñ*') Then let wcurp = ' '; End If;
-              If ((wcurp[1,2] = '  ') or (wcurp is null) or (Length(wcurp) != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If;
+              --If (wcurp[1,2] = '  ' or wcurp is null or (wcurp != 18) or (wcurp matches'*?*')) Then let wcurp = ' '; End If;
+              --If (wcurp[1,2] = '  ' or wcurp is null or wcurp != 18 or wcurp matches'*?*') Then let wcurp = ' '; End If;
+              If ((wcurp[1,2] = '  ') or (wcurp is null) or (Length(wcurp) != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If; --Si
               If (wnumero_ss[1,2] = '  ' or wnumero_ss is null) Then let wnumero_ss = '99999999999'; End If;
               If (wnombre[1] = ' ' or wnombre is null or wnombre[1] = '') Then let wnombre = wnombre2; End If;
               If (wnombre like '%  %') Then let wnombre = wnombre2; End If;
@@ -543,8 +536,13 @@ returning char(265);
               If wempresa <> "02" Then
 
                 let desc_err = 'NOE inf_rl01';
+				
+				Select  Min(b.fecha_ini_ts) Into wfecha_ini_ts
+				From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
+					Where a.id_empleado = wemp And a.fec_pago = wfec_pago And a.id_empresa = wempresa
+					And a.id_empleado = b.id_empleado And a.fec_pago = b.fec_pago And a.fec_imputacion = b.fec_imputacion;
 
-                Select First 1
+                Select --First 1 --Para modificar
                   Case 
                     When a.id_tipo_tabulador='F' Then a.id_grupo_grado_nivel
                     Else a.id_nivel
@@ -553,9 +551,11 @@ returning char(265);
                     When a.id_tipo_tabulador='F' Then a.id_integracion
                     Else a.id_sub_nivel
                   End Int_SubNivel,
-                  a.id_zona, MAX(a.fec_imputacion), MIN(b.fecha_ini_ts)
+                  a.id_zona, MAX(a.fec_imputacion)
+				  --, MIN(b.fecha_ini_ts)
                   Into wid_nivel_wid_grupo_grado_nivel, wid_sub_nivel_wid_integracion, 
-                  wid_zona, wfec_imputacion, wfecha_ini_ts
+                  wid_zona, wfec_imputacion
+				  --, wfecha_ini_ts
                 From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
                 Where a.id_empleado = b.id_empleado
                   And a.fec_pago = b.fec_pago
@@ -626,7 +626,7 @@ returning char(265);
                 let wsindl_c = 'No';
                 let wfec_alta2 = wfec_alta;
 
-                If wsindl > 0 Then let wsindl_c = 'Sí'; End If;
+                If wsindl > 0 Then let wsindl_c = 'Sí'; End If; --Si
                 If wsindn > 0 Then let wsindl_c = 'Sí'; End If;
 
               Else

@@ -178,7 +178,7 @@ From cosif_prueba2 a
 Left Outer Join timbrado_nomina_2022 T1 On a.rfc=T1.id_Empleado And a.fec_pago=T1.FechaPago
   Where a.tipo IN (0,1) 
   And a.id_empresa = '01'
-  And a.fec_pago In('2022-10-08','2022-10-31','2022-11-01','2022-11-02','2022-11-03')
+  And a.fec_pago In('2022-08-07','2022-08-24','2022-08-27','2022-08-28','2022-08-31','2022-09-01','2022-09-02','2022-09-03')
   --And a.fec_pago Between '' And ''
   And T1.UUID Is Null
   Group By a.rfc,a.fec_pago;

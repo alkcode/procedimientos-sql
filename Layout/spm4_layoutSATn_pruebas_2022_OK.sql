@@ -1,3 +1,4 @@
+-------ORIGINAL CON ARREGLO DE DEDUCIIONES EN CERO Y VARIABLE VACIA, CAMBIO DE NOMBRE, IMPORTE, CAMBIO EN CNR wdpuesto A wd2puesto
 drop procedure if exists spm4_layoutsatn_pruebas_2022;
 create procedure spm4_layoutsatn_pruebas_2022(wfec_pago date,wtipo varchar(1), wempresa varchar(2))
 returning char(265);
@@ -57,8 +58,8 @@ returning char(265);
    
    set isolation to dirty read;
 
-   ---set debug file to 'layout.log';
-   ---trace on;
+   --set debug file to 'layout.log';
+   --trace on;
       
    let wemp=' '; let w_cont=1; let wconse=1; let wzero=0.0;
 
@@ -66,6 +67,7 @@ returning char(265);
    let wfec_pagox=current;
    let wnum_linea=0;
       
+
    
    drop table info_satn;
   
@@ -157,7 +159,13 @@ returning char(265);
               And c11<>'26' And c12<>'26' And c13<>'26' And c14<>'26' And c15<>'26' And c16<>'26' And c17<>'26' And c18<>'26' And c19<>'26' And c20<>'26'
               And c21<>'26' And c22<>'26' And c23<>'26' And c24<>'26' And c25<>'26' And c26<>'26' And c27<>'26' And c28<>'26' And c29<>'26' And c30<>'26'
               And c31<>'26' And c32<>'26' And c33<>'26' And c34<>'26' And c35<>'26' And c36<>'26' And c37<>'26' And c38<>'26' And c39<>'26' And c40<>'26')
-              ---and rfc in ('355290','356946','368117','361062','384802','357819','108564','385281','198352','209398','395441','250700','385870','270450','325803','382293','281988')
+             -- And rfc in ('147302','156111','188183','218087','226717','229594','233746','261271','262427','294916',
+             --             '301199','313871','314354','349193','359413','366912','370760','373747','382569','392344',
+             --             '394000','396435','397901','399893','399898','401471','404680','404969','406062','407978',
+             --             '408911','409708','409888','410817','411683','412038','412059','412163','412238','412245',
+             --             '412255','412258','502391','503316','589289','597069','802605','803525','803528','805349',
+             --             '805623')
+              --and rfc in ('355290','356946','368117','361062','384802','357819','108564','385281','198352','209398','395441','250700','385870','270450','325803','382293','281988')
               ---and rfc in ('355290','356946','368117','361062','384802','357819','108564','385281','198352','209398')--(select id_empleado from emp_sat)
               ---and rfc = '355290'--(select id_empleado from emp_sat)
               ---and rfc in  ('362025','253015')
@@ -468,9 +476,15 @@ returning char(265);
       ---let wnum_cons2 = lpad(wnum_cons2,8,'0');
       
       insert into valida_timbrado (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
-
+      --If wdeduc=0.00                     ---------------PARA QUE NO PINTE DEDUCCION EN DC EN 0.00
+      --LET wdeduc='';                    ---------------PARA QUE NO PINTE DEDUCCION EN DC EN 0.00
       ---let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || wfec_pagox || 'T00:00:00' || '@' || '99' || '@' || wperc || '@' || wdeduc || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
-      let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || substr(wfec_pagox,1,10) || 'T' || substr(wfec_pagox,12,19) || '@' || '99' || '@' || wperc || '@' || wdeduc || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
+      
+      If wdeduc = 0.00 Then
+        let wdeduc = '';
+      End If;
+
+      let cadenaE01 = 'DC@3.3@'||'Serie@' || lpad(wnum_cons2,9,'0') || '@' || substr(wfec_pagox,1,10) || 'T' || substr(wfec_pagox,12,19) || '@' || '99' || '@' || wperc || '@' || NVL(wdeduc,'') || '@MXN@' || '@' || wliquido || '@N@' || 'PUE@'|| wcp || '@@@@';
 
       let wnum_linea = wnum_linea + 1;
       let wnum_lini = wnum_linea;
@@ -508,7 +522,8 @@ returning char(265);
      	      let wcurp = "ERROR_CURP";
      	     end if;
      	           
-     	     if length(wid_legal) != 13 then    	      
+     	     --if length(wid_legal) != 13 then    se modifico para que pinte la linea aunque este vacio
+           If (length(wid_legal) != 13) or (wid_legal is null) Then    	      
      	        let wid_legal = "ERROR_RFC";
      	     end if;
              
@@ -518,7 +533,7 @@ returning char(265);
              select count(*) into wlongmal from m4t_empleados 
                 where id_sociedad=id_sociedad and id_empleado=wemp and length(id_c_u_r_p_st)!= 18;
              select count(*) into wcaracterr from m4t_empleados 
-                where id_sociedad=id_sociedad and id_empleado=wemp and id_c_u_r_p_st matches'*�*';
+                where id_sociedad=id_sociedad and id_empleado=wemp and id_c_u_r_p_st matches'*Ñ*';
      
              if (wcurp[1,2] = '  ' or wcurp is null or wlongmal = 1 or wcaracterr = 1) then let wcurp = ' '; end if;
              if (wnumero_ss[1,2] = '  ' or wnumero_ss is null) then let wnumero_ss = '99999999999'; end if;
@@ -591,13 +606,8 @@ returning char(265);
         into wsindl, wsindn, wdiaantig, wfec_alta, wcont_des_tot, wcon_pag, wfal_ret, wi2puesto, wcen_trab, wcen_pago, wfec_alta_empleado--, --wfecha_ini_ts
             ---wid_nivel, wid_sub_nivel, wid_grupo_grado_nivel, wid_integracion, wid_zona, wid_tipo_tabulador
         from m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
-        where a.id_empleado = wemp
-         and a.fec_pago = wfec_pago 
-         and a.fec_pago = a.fec_imputacion 
-         and a.id_empresa = wempresa
-         and a.id_empleado = b.id_empleado 
-         and a.fec_pago = b.fec_pago 
-         and a.fec_imputacion = b.fec_imputacion;
+        where a.id_empleado = wemp and a.fec_pago = wfec_pago and a.fec_pago = a.fec_imputacion and a.id_empresa = wempresa
+            and a.id_empleado = b.id_empleado and a.fec_pago = b.fec_pago and a.fec_imputacion = b.fec_imputacion;
 
             --if id_tipo_tabulador = 'F' then 
 --let wid_nivel_wid_grupo_grado_nivel = wid_grupo_grado_nivel;
@@ -619,8 +629,8 @@ returning char(265);
         where a.id_empleado = wemp and a.fec_pago = wfec_pago and a.id_empresa = wempresa
         and a.id_empleado = b.id_empleado and a.fec_pago = b.fec_pago and a.fec_imputacion = b.fec_imputacion;
         
-	select a.c_sindic_local, a.c_sindic_nacion, a.d_antig_gob_fed, b.fecha_ingreso_st
-	into wsindl, wsindn, wdiaantig, wfec_alta
+	select a.c_sindic_local, a.c_sindic_nacion, a.d_antig_gob_fed, b.fecha_ingreso_st, a.prme_cont_tot, a.prme_cont_per, nvl(a.comentario, ''), a.id_puesto_plaza, a.id_centro_trab,a.id_centro_pago,b.fec_alta_empleado--,--b.fecha_ini_ts, 
+	into wsindl, wsindn, wdiaantig, wfec_alta, wcont_des_tot, wcon_pag, wfal_ret, wi2puesto, wcen_trab, wcen_pago, wfec_alta_empleado
 	from m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
 	where a.id_empleado = wemp and a.fec_pago = wfec_pago and a.fec_imputacion = wfec_impu and a.id_empresa = wempresa
         and a.id_empleado = b.id_empleado and a.fec_pago = b.fec_pago and a.fec_imputacion = b.fec_imputacion;
@@ -648,8 +658,8 @@ returning char(265);
      let wsindl_c = 'No';
      let wfec_alta2 = wfec_alta;
 
-     if wsindl > 0 then let wsindl_c = 'S�' ; end if;
-     if wsindn > 0 then let wsindl_c = 'S�' ; end if;
+     if wsindl > 0 then let wsindl_c = 'Sí' ; end if;
+     if wsindn > 0 then let wsindl_c = 'Sí' ; end if;
      
    else
 
@@ -783,7 +793,7 @@ returning char(265);
 
       
       ---||wid_legal
-      let cadNOEa = 'CNR'||'@'|| w_TipNom1 || '@' || substr(wfec_finx,1,10) || '@' || wfecha_ini_ts || '@' || substr(wfec_finx,1,10) || '@' || wdias || '@' || wperc || '@' || wdeduc || '@0.00@' || wcurp || '@' || trim(wnumero_ss) || '@' || substr(wfec_alta2,1,10) || '@' || trim(wantigf) || '@' || w_TipCont1 ||'@'|| wsindl_c || '@01@02@' || wemp || '@';
+      let cadNOEa = 'CNR'||'@'|| w_TipNom1 || '@' || substr(wfec_finx,1,10) || '@' || wfecha_ini_ts || '@' || substr(wfec_finx,1,10) || '@' || wdias || '@' || wperc || '@' || NVL(wdeduc,'') || '@0.00@' || wcurp || '@' || trim(wnumero_ss) || '@' || substr(wfec_alta2,1,10) || '@' || trim(wantigf) || '@' || w_TipCont1 ||'@'|| wsindl_c || '@01@02@' || wemp || '@';
       ---let cadNOEb = trim(wdserv) || '@' || trim(wdpuesto) || '@1@' || w_Period1 ||'@'||  wbanco_c ||'@'|| wcuenta || '@@0.00@' || westado_c || '@';
       ---let cadNOEb = trim(wdserv) || '@' || trim(wdpuesto) || '@1@' || w_Period1 ||'@'||  wbanco_c ||'@'|| wcuenta || '@@0.00@' || westado_c || '@' || wcon_pag || '@DE@' || wcont_des_tot || '@DESCUENTOS@';
       let cadNOEb = trim(wdserv) || '@' || trim(wd2puesto) || '@1@' || w_Period1 ||'@'||  trim(wbanco_c) ||'@'|| wcuenta || '@@0.00@' || westado_c || '@';
@@ -795,14 +805,14 @@ returning char(265);
       ---insert into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEa)||trim(cadNOEb));
       insert into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEa)||trim(cadNOEb));---||trim(cadNOEc));
       
-      let cadNOEc = 'CNR2'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@' || trim(wid_nivel_wid_grupo_grado_nivel) || '/' || trim(wid_sub_nivel_wid_integracion) || '@' || trim(wid_zona) || '/0' || '@' || trim(wantig_anio) || '@' || trim(wantig_meses) || '@' || trim(wantig_dias) || '@' || wfec_alta_empleado || '@' || wsem_trabajadas || '@'; --|| wfec_alta2 wfec_alta_empleado || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
+      let cadNOEc = 'OTROS'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@' || trim(wid_nivel_wid_grupo_grado_nivel) || '/' || trim(wid_sub_nivel_wid_integracion) || '@' || trim(wid_zona) || '/0' || '@' || trim(wantig_anio) || '@' || trim(wantig_meses) || '@' || trim(wantig_dias) || '@' || wfec_alta_empleado || '@' || wsem_trabajadas || '@'; --|| wfec_alta2 wfec_alta_empleado || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
       ---let cadNOEc = 'CNR2'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@'; --|| trim(wid_nivel_wid_grupo_grado_nivel) || '@'; --'/' || trim(wid_sub_nivel) || '' || trim(wid_integracion) || '@' || trim(wid_zona) || '/0' || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
       ---let cadNOEc = 'CNR2'|| '@' || wcon_pag ||' DE '|| wcont_des_tot || '@' || trim(wfal_ret) || '@' || trim(wipuesto) || '@' || trim(wcen_pago) || '@' || trim(wcen_trab) || '@';    --- || wi2puesto || '@' || trim(wd2puesto) || '@';
       ---let cadNOEc = 'CNR2'|| '@' || wfal_ret || '@';
       let wnum_linea=wnum_linea+1;
       insert into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,trim(cadNOEc));
 
-      let cadenaD01= 'CN@' || "84111505@1@" || 'ACT@' || trim(wdescrip) || '@' || wperc || '@' || wperc || '@' || wdeduc ||'@@';
+      let cadenaD01= 'CN@' || "84111505@1@" || 'ACT@' || trim(wdescrip) || '@' || wperc || '@' || wperc || '@' || NVL(wdeduc,'') ||'@@';
       let wnum_linea=wnum_linea+1;
       insert into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaD01);
       
@@ -1131,10 +1141,16 @@ returning char(265);
       if wc39='09' and wi39 > 0 then call GenNOHn(wemp,wfec_pago,wi39,wc39,wnum_linea,wid_empresa) returning wnum_linea; end if;
       if wc40='09' and wi40 > 0 then call GenNOHn(wemp,wfec_pago,wi40,wc40,wnum_linea,wid_empresa) returning wnum_linea; end if;      
       
-      
-      let cadenaQ = 'CND@' || wimporte || '@'  || wispt;
-      let wnum_linea=wnum_linea+1;
-      insert into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
+
+              --------------
+        If wdeduc = 0 Then
+        
+        Else
+          let cadenaQ = 'CND@' || wimporte || '@'  || wispt;
+          let wnum_linea=wnum_linea+1;
+          Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
+        End If;
+        ---------------PARA IMPORTE DE DEDUCCION EN CERO NO PINTAR
 
       if wp1 = 'D' then
       if wi1 != 0 and flg1 = 0 then call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
@@ -1312,7 +1328,7 @@ returning char(265);
    SYSTEM "dbaccess m4prod sql01.sql";
    
    SYSTEM "sed '1,$s/|//g' Archivo.txt > Archivo1.txt";
-   SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT_2022.txt";
+   SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT2022.txt";
 
    
    let w_cont = w_cont - 1;
