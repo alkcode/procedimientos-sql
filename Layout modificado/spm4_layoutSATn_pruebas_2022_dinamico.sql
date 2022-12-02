@@ -518,7 +518,7 @@ returning char(265);
 
               --If (wcurp[1,2] = '  ' or wcurp is null or (wcurp != 18) or (wcurp matches'*?*')) Then let wcurp = ' '; End If;
               --If (wcurp[1,2] = '  ' or wcurp is null or wcurp != 18 or wcurp matches'*?*') Then let wcurp = ' '; End If;
-              If ((wcurp[1,2] = '  ') or (wcurp is null) or (Length(wcurp) != 18) or (wcurp matches'*Ñ*')) Then let wcurp = ' '; End If; --Si
+              If ((wcurp[1,2] = '  ') or (wcurp is null) or (Length(wcurp) != 18) or (wcurp matches'*?*')) Then let wcurp = ' '; End If; --Si
               If (wnumero_ss[1,2] = '  ' or wnumero_ss is null) Then let wnumero_ss = '99999999999'; End If;
               If (wnombre[1] = ' ' or wnombre is null or wnombre[1] = '') Then let wnombre = wnombre2; End If;
               If (wnombre like '%  %') Then let wnombre = wnombre2; End If;
@@ -626,8 +626,8 @@ returning char(265);
                 let wsindl_c = 'No';
                 let wfec_alta2 = wfec_alta;
 
-                If wsindl > 0 Then let wsindl_c = 'Sí'; End If; --Si
-                If wsindn > 0 Then let wsindl_c = 'Sí'; End If;
+                If wsindl > 0 Then let wsindl_c = 'S?'; End If; --Si
+                If wsindn > 0 Then let wsindl_c = 'S?'; End If;
 
               Else
                 let desc_err = 'NOE inf_rl1_02';
@@ -754,10 +754,10 @@ returning char(265);
 
               If wp1 = 'P' Then
                 If wi1 != 0 and flg1 = 0 Then
-					Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
+					        Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg1 = 3 Then
-						Call GenLinSATne(wemp,wp1,wi1,wc1,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
+						        Call GenLinSATne(wemp,wp1,wi1,wc1,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg2 = 2;
                   End If;
                 End If;
@@ -765,10 +765,10 @@ returning char(265);
 
               If wp2 = 'P' Then
                 If wi2 != 0 and flg2 = 0 Then
-					Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
+					        Call GenLinSATn(wemp,wp2,wi2,wc2,wnum_linea,wid_empresa) returning wnum_linea;
                 Else
                   If flg2 = 3 Then
-					Call GenLinSATne(wemp,wp2,wi2,wc2,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
+					          Call GenLinSATne(wemp,wp2,wi2,wc2,wi3,wc3,wnum_linea,wid_empresa) returning wnum_linea;
                     let flg3 = 2;
                   End If;
                 End If;
@@ -1237,11 +1237,11 @@ returning char(265);
 					Insert Into info_satn (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaQ);
 				End If;
 				----------
-              If wp1 = 'D' Then
-                If wi1 != 0 and flg1 = 0 Then
-					Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
-                End If;
-              End If;
+        If wp1 = 'D' Then
+          If wi1 != 0 and flg1 = 0 Then
+				  	Call GenLinSATn(wemp,wp1,wi1,wc1,wnum_linea,wid_empresa) returning wnum_linea;
+          End If;
+        End If;
 
               If wp2 = 'D' Then
                 If wi2 != 0 and flg2 = 0 Then

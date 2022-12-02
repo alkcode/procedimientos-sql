@@ -70,8 +70,8 @@ returning char(265);
 
    Set Isolation To Dirty Read;
 
-    --set debug file to 'prueba_alek_mq.log';
-    --trace on;
+    set debug file to 'prueba_alek_din.log';
+    trace on;
 
    let wemp=' '; let w_cont=1; let wconse=1; let wzero=0.0;
 
@@ -199,13 +199,13 @@ returning char(265);
         Declare query_principal_cursor cursor FOR stmt_qry_principal;
         Open query_principal_cursor;
 
-        While( 1 = 1 )
+      While( 1 = 1 )
 		  
-     	  ON EXCEPTION set error_num
-			return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
-			let wnum_linea = wnum_linea + 1;
-			Insert Into info_satn (num_linea,id_empresa,id_empleado,linea)
-			values (wnum_linea,wid_empresa,wemp,'Error-'||desc_err||':'||error_num|| '-emp:'||wemp||'-Cons:'||wnum_cons2);
+     	ON EXCEPTION set error_num
+        return 'error en  ---> ' || w_cont || ' '|| wemp|| ' ' || error_num with resume;
+        let wnum_linea = wnum_linea + 1;
+        Insert Into info_satn (num_linea,id_empresa,id_empleado,linea)
+        values (wnum_linea,wid_empresa,wemp,'Error-'||desc_err||':'||error_num|| '-emp:'||wemp||'-Cons:'||wnum_cons2);
 		  END EXCEPTION WITH RESUME;
 			
       Fetch query_principal_cursor
@@ -664,8 +664,8 @@ returning char(265);
               let wsindl_c = 'No';
               let wfec_alta2 = wfec_alta;
 
-              If wsindl > 0 Then let wsindl_c = 'Sí'; End If; --Si
-              If wsindn > 0 Then let wsindl_c = 'Sí'; End If;
+              If wsindl > 0 Then let wsindl_c = 'S?'; End If; --Si
+              If wsindn > 0 Then let wsindl_c = 'S?'; End If;
 
             Else
                 let desc_err = 'NOE inf_rl1_02';

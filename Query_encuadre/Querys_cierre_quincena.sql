@@ -43,16 +43,19 @@ SELECT a.fec_pago, COUNT(*) Registros,
         CASE WHEN a.c37 in ('53') THEN CASE WHEN a.i37<0 THEN 0 WHEN a.i37 = '' THEN 0 WHEN a.i37 IS NULL THEN 0 ELSE a.i37 END ELSE 0 END +
         CASE WHEN a.c38 in ('53') THEN CASE WHEN a.i38<0 THEN 0 WHEN a.i38 = '' THEN 0 WHEN a.i38 IS NULL THEN 0 ELSE a.i38 END ELSE 0 END +
         CASE WHEN a.c39 in ('53') THEN CASE WHEN a.i39<0 THEN 0 WHEN a.i39 = '' THEN 0 WHEN a.i39 IS NULL THEN 0 ELSE a.i39 END ELSE 0 END +
-        CASE WHEN a.c40 in ('53') THEN CASE WHEN a.i40<0 THEN 0 WHEN a.i40 = '' THEN 0 WHEN a.i40 IS NULL THEN 0 ELSE a.i40 END ELSE 0 END ) ISR_meta4
+        CASE WHEN a.c40 in ('53') THEN CASE WHEN a.i40<0 THEN 0 WHEN a.i40 = '' THEN 0 WHEN a.i40 IS NULL THEN 0 ELSE a.i40 END ELSE 0 END )--ISR_meta4
       From cosif_prueba2 a
-      Where a.quincena = '20'
+      Where a.quincena = '22'
       And a.anio = '2022'
       And a.tipo In (0,1)
       And a.id_empresa = '01'
+      --And a.impacum_p5 in (1,2,3,5)
       --AND a.fec_pago BETWEEN   AND   
-      And a.fec_pago IN('2022/10/31','2022/10/08','2022/11/01','2022/11/02','2022/11/03') 
-      Group By a.fec_pago  
+      And a.fec_pago IN('2022-11-30') 
+      Group By a.fec_pago, a.impacum_p5
       Order By a.fec_pago ;
+      
+select * from cosif_timbrado_2022 where rfc = 407986;
 
 
  --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -62,14 +65,16 @@ Select a.fec_pago, Count(*) Registros, Sum(T1.ImpRete) Isr, Sum(T1.Netopago) Net
   Inner Join timbrado_nomina_2022 T1 On a.rfc=T1.id_empleado And a.fec_pago=T1.FechaPago 
   Where a.tipo IN (0,1)
     And a.id_empresa = '01'
-    And a.fec_pago In('2022-10-08','2022-10-31','2022-10-31','2022-11-01','2022-11-02','2022-11-03')
+    --And a.impacum_p5 = 1
+    And a.fec_pago In('2022-11-30')
+    --And a.impacum_p5 in (1,2,3,5)
     --And a.fec_pago Between '' And ''
     And (T1.estatus Is Null Or T1.estatus='Cancelado') 
-    Group By a.fec_pago 
+    Group By a.fec_pago, a.impacum_p5
     Order By a.fec_pago;
 
 
-
+select * from timbrado_nomina_2022 where id_empleado in ('278273', '') and fechapago='2022-11-30'
 
  ----------------------------------------------------------------------------------------------------------------------------------------------------------------
  ---------------------------------Consulta para Contar Registros que no se timbraron----Ejecutar esta consulta---------------------------------------------------
@@ -119,10 +124,11 @@ Select a.fec_pago, Count(*) Registros,
   Left Outer Join timbrado_nomina_2022 T1 On a.rfc=T1.id_Empleado And a.fec_pago=t1.fechapago
     Where a.tipo IN (0,1) 
     And a.id_empresa = '01'
-    And a.fec_pago In('2022-10-08','2022-10-31','2022-11-01','2022-11-02','2022-11-03')
+    And a.fec_pago In('2022-11-30')
+    --And a.impacum_p5 in (1,2,3,5)
     --And a.fec_pago BETWEEN '' AND '' 
     And T1.UUID Is Null 
-    Group By a.fec_pago
+    Group By a.fec_pago, a.impacum_p5
     Order By a.fec_pago;
 
 
@@ -178,9 +184,68 @@ From cosif_prueba2 a
 Left Outer Join timbrado_nomina_2022 T1 On a.rfc=T1.id_Empleado And a.fec_pago=T1.FechaPago
   Where a.tipo IN (0,1) 
   And a.id_empresa = '01'
-  And a.fec_pago In('2022-08-07','2022-08-24','2022-08-27','2022-08-28','2022-08-31','2022-09-01','2022-09-02','2022-09-03')
+  And a.fec_pago In('2022-11-30')
   --And a.fec_pago Between '' And ''
   And T1.UUID Is Null
   Group By a.rfc,a.fec_pago;
 
+select * from timbrado_nomina_2022 ;
 
+
+
+select count(*) from timbrado_nomina_2022 where estatus is null and fechapago = '2022-11-30';
+
+
+
+
+select
+       Case tipo
+   when '1' then'EXTRAORDINARIA'
+   when '2' then'MANDATO JUDICIAL'
+   when '3' then'PENSION ALIMENTICIA'
+   when '4' then'CANCELADAS'    
+End nomina,
+       Case impacum_p5
+             When '01' then'PRESUPUESTAL'
+          When '02' then'TEMPORAL'
+          When '03' then'COVID'
+             When '04' then'TMPENSIONISSSTE'
+          When '05' then'HONORARIOS'
+End typo,
+Case id_empresa
+    When '01' Then 'ISSSTE ASEGURADOR'
+    When '02' Then 'SUPERISSSTE'
+    When '03' Then 'TURISSSTE'
+    When '04' Then 'FOVISSSTE'
+    When '05' Then 'PENSIONISSSTE'
+End empresa, perc_ded, concepto,count(concepto) registros, n_concepto, SUM(importe)
+From cosif_prueba2 m, cosifdetalled d, m4t_conceptos_nomina c
+Where m.num_cons = d.num_cons
+  And d.concepto = c.id_concepto
+  And c.id_ordinal = 1
+  --and m.impacum_p5 = '0'
+  And fec_pago = '2022/11/30' --Between '2022/03/10' and '2022/03/13'
+  And tipo IN ('0', '1')
+  And concepto in ('53','IA')
+--and tipo = '2'
+       Group by nomina, typo, empresa, perc_ded, concepto, n_concepto
+       order by 2,3,4 desc,5 asc,1;
+
+
+SELECT
+        m4_acumulado_rl1.id_empresa,
+        m4_acumulado_rl.id_tipo_plaza,
+        sum(m4_acumulado_rl.ISPT),
+        sum(m4_acumulado_rl.ISR_AGUIN)
+       FROM
+        m4t_acumulado_rl_2011 m4_acumulado_rl,
+        m4t_acumulado_rl1_2011 m4_acumulado_rl1
+       WHERE
+        m4_acumulado_rl.id_sociedad=m4_acumulado_rl1.id_sociedad AND
+        m4_acumulado_rl.id_empleado=m4_acumulado_rl1.id_empleado AND
+        m4_acumulado_rl.fec_alta_empleado=m4_acumulado_rl1.fec_alta_empleado AND
+        m4_acumulado_rl.fec_imputacion=m4_acumulado_rl1.fec_imputacion AND
+        m4_acumulado_rl.fec_pago=m4_acumulado_rl1.fec_pago AND
+        m4_acumulado_rl.fec_pago = "2022/11/30" and
+        m4_acumulado_rl1.id_empresa = '01'
+group by 1,2
