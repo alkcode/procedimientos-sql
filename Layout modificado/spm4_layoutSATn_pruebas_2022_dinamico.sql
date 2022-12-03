@@ -1493,7 +1493,7 @@ returning char(265);
 
 
     SYSTEM "echo unload to 'Archivo.txt' > sql01.sql";
-	SYSTEM "echo select linea from info_satn order by num_linea >> sql01.sql";
+	  SYSTEM "echo select linea from info_satn order by num_linea >> sql01.sql";
     SYSTEM "dbaccess m4prod sql01.sql";
     SYSTEM "sed '1,$s/|//g' Archivo.txt > Archivo1.txt";
     SYSTEM "sed '1,$s/@/|/g' Archivo1.txt > ArchivoSAT2022.txt";
