@@ -49,10 +49,10 @@ SELECT a.fec_pago, COUNT(*) Registros,
       And a.anio = '2022'
       And a.tipo In (0,1)
       And a.id_empresa = '01'
-      --And a.impacum_p5 in (1,2,3,5)
+      And a.impacum_p5 in (1,2,3,5)
       --AND a.fec_pago BETWEEN   AND   
       And a.fec_pago IN('2022-11-30') 
-      Group By a.fec_pago, a.impacum_p5
+      Group By a.fec_pago--, a.impacum_p5
       Order By a.fec_pago ;
       
 select * from cosif_timbrado_2022 where rfc = 407986;
@@ -198,45 +198,46 @@ select count(*) from timbrado_nomina_2022 where estatus is null and fechapago = 
 
 
 
-select
-       Case tipo
-   when '1' then'EXTRAORDINARIA'
-   when '2' then'MANDATO JUDICIAL'
-   when '3' then'PENSION ALIMENTICIA'
-   when '4' then'CANCELADAS'    
-End nomina,
-       Case impacum_p5
-             When '01' then'PRESUPUESTAL'
-          When '02' then'TEMPORAL'
-          When '03' then'COVID'
-             When '04' then'TMPENSIONISSSTE'
-          When '05' then'HONORARIOS'
-End typo,
-Case id_empresa
-    When '01' Then 'ISSSTE ASEGURADOR'
-    When '02' Then 'SUPERISSSTE'
-    When '03' Then 'TURISSSTE'
-    When '04' Then 'FOVISSSTE'
-    When '05' Then 'PENSIONISSSTE'
-End empresa, perc_ded, concepto,count(concepto) registros, n_concepto, SUM(importe)
-From cosif_prueba2 m, cosifdetalled d, m4t_conceptos_nomina c
-Where m.num_cons = d.num_cons
-  And d.concepto = c.id_concepto
-  And c.id_ordinal = 1
-  --and m.impacum_p5 = '0'
-  And fec_pago = '2022/11/30' --Between '2022/03/10' and '2022/03/13'
-  And tipo IN ('0', '1')
-  And concepto in ('53','IA')
+Select
+  Case tipo
+     When '1' Then 'EXTRAORDINARIA'
+     When '2' Then 'MANDATO JUDICIAL'
+     When '3' Then 'PENSION ALIMENTICIA'
+     When '4' Then 'CANCELADAS'    
+  End nomina,
+  Case impacum_p5
+     When '01' Then 'PRESUPUESTAL'
+     When '02' Then 'TEMPORAL'
+     When '03' Then 'COVID'
+     When '04' Then 'TMPENSIONISSSTE'
+     When '05' Then 'HONORARIOS'
+  End typo,
+  Case id_empresa
+     When '01' Then 'ISSSTE ASEGURADOR'
+     When '02' Then 'SUPERISSSTE'
+     When '03' Then 'TURISSSTE'
+     When '04' Then 'FOVISSSTE'
+     When '05' Then 'PENSIONISSSTE'
+  End empresa, 
+  perc_ded, concepto, count(concepto) registros, n_concepto, SUM(importe)
+  From cosif_prueba2 m, cosifdetalled d, m4t_conceptos_nomina c
+  Where m.num_cons = d.num_cons
+    And d.concepto = c.id_concepto
+    And c.id_ordinal = 1
+    And m.impacum_p5 In (0,1,2,3,5)
+    And fec_pago = '2022/11/30' --Between '2022/03/10' and '2022/03/13'
+    And tipo IN ('0', '1')
+    And concepto in ('53','IA')
 --and tipo = '2'
-       Group by nomina, typo, empresa, perc_ded, concepto, n_concepto
-       order by 2,3,4 desc,5 asc,1;
+  Group by nomina, typo, empresa, perc_ded, concepto, n_concepto
+  Order by 2,3,4 desc,5 asc,1;
 
 
-SELECT
-        m4_acumulado_rl1.id_empresa,
-        m4_acumulado_rl.id_tipo_plaza,
-        sum(m4_acumulado_rl.ISPT),
-        sum(m4_acumulado_rl.ISR_AGUIN)
+SELECT *
+        --m4_acumulado_rl1.id_empresa,
+        --m4_acumulado_rl.id_tipo_plaza,
+        --sum(m4_acumulado_rl.ISPT),
+        --sum(m4_acumulado_rl.ISR_AGUIN)
        FROM
         m4t_acumulado_rl_2011 m4_acumulado_rl,
         m4t_acumulado_rl1_2011 m4_acumulado_rl1
@@ -247,5 +248,134 @@ SELECT
         m4_acumulado_rl.fec_imputacion=m4_acumulado_rl1.fec_imputacion AND
         m4_acumulado_rl.fec_pago=m4_acumulado_rl1.fec_pago AND
         m4_acumulado_rl.fec_pago = "2022/11/30" and
-        m4_acumulado_rl1.id_empresa = '01'
-group by 1,2
+        m4_acumulado_rl1.id_empresa = '01' and
+        m4_acumulado_rl1.id_empleado = '407986'
+group by 1,2;
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Select *  
+    From ( 
+    Select Count(*) registros_Meta4, a.fec_pago fec_pago_proceso, 
+    Sum( 
+        Case When a.c1 in ('53') Then Case When a.i1<0 Then 0 When a.i1 = '' Then 0 When a.i1 Is Null Then 0 Else a.i1 End Else 0 End +  
+        Case When a.c2 in ('53') Then Case When a.i2<0 Then 0 When a.i2 = '' Then 0 When a.i2 Is Null Then 0 Else a.i2 End Else 0 End +  
+        Case When a.c3 in ('53') Then Case When a.i3<0 Then 0 When a.i3 = '' Then 0 When a.i3 Is Null Then 0 Else a.i3 End Else 0 End +  
+        Case When a.c4 in ('53') Then Case When a.i4<0 Then 0 When a.i4 = '' Then 0 When a.i4 Is Null Then 0 Else a.i4 End Else 0 End +  
+        Case When a.c5 in ('53') Then Case When a.i5<0 Then 0 When a.i5 = '' Then 0 When a.i5 Is Null Then 0 Else a.i5 End Else 0 End +  
+        Case When a.c6 in ('53') Then Case When a.i6<0 Then 0 When a.i6 = '' Then 0 When a.i6 Is Null Then 0 Else a.i6 End Else 0 End +  
+        Case When a.c7 in ('53') Then Case When a.i7<0 Then 0 When a.i7 = '' Then 0 When a.i7 Is Null Then 0 Else a.i7 End Else 0 End +  
+        Case When a.c8 in ('53') Then Case When a.i8<0 Then 0 When a.i8 = '' Then 0 When a.i8 Is Null Then 0 Else a.i8 End Else 0 End +  
+        Case When a.c9 in ('53') Then Case When a.i9<0 Then 0 When a.i9 = '' Then 0 When a.i9 Is Null Then 0 Else a.i9 End Else 0 End +  
+        Case When a.c10 in ('53') Then Case When a.i10<0 Then 0 When a.i10 = '' Then 0 When a.i10 Is Null Then 0 Else a.i10 End Else 0 End +  
+        Case When a.c11 in ('53') Then Case When a.i11<0 Then 0 When a.i11 = '' Then 0 When a.i11 Is Null Then 0 Else a.i11 End Else 0 End +  
+        Case When a.c12 in ('53') Then Case When a.i12<0 Then 0 When a.i12 = '' Then 0 When a.i12 Is Null Then 0 Else a.i12 End Else 0 End +  
+        Case When a.c13 in ('53') Then Case When a.i13<0 Then 0 When a.i13 = '' Then 0 When a.i13 Is Null Then 0 Else a.i13 End Else 0 End +  
+        Case When a.c14 in ('53') Then Case When a.i14<0 Then 0 When a.i14 = '' Then 0 When a.i14 Is Null Then 0 Else a.i14 End Else 0 End +  
+        Case When a.c15 in ('53') Then Case When a.i15<0 Then 0 When a.i15 = '' Then 0 When a.i15 Is Null Then 0 Else a.i15 End Else 0 End +  
+        Case When a.c16 in ('53') Then Case When a.i16<0 Then 0 When a.i16 = '' Then 0 When a.i16 Is Null Then 0 Else a.i16 End Else 0 End +  
+        Case When a.c17 in ('53') Then Case When a.i17<0 Then 0 When a.i17 = '' Then 0 When a.i17 Is Null Then 0 Else a.i17 End Else 0 End +  
+        Case When a.c18 in ('53') Then Case When a.i18<0 Then 0 When a.i18 = '' Then 0 When a.i18 Is Null Then 0 Else a.i18 End Else 0 End +  
+        Case When a.c19 in ('53') Then Case When a.i19<0 Then 0 When a.i19 = '' Then 0 When a.i19 Is Null Then 0 Else a.i19 End Else 0 End +  
+        Case When a.c20 in ('53') Then Case When a.i20<0 Then 0 When a.i20 = '' Then 0 When a.i20 Is Null Then 0 Else a.i20 End Else 0 End +  
+        Case When a.c21 in ('53') Then Case When a.i21<0 Then 0 When a.i21 = '' Then 0 When a.i21 Is Null Then 0 Else a.i21 End Else 0 End +  
+        Case When a.c22 in ('53') Then Case When a.i22<0 Then 0 When a.i22 = '' Then 0 When a.i22 Is Null Then 0 Else a.i22 End Else 0 End +  
+        Case When a.c23 in ('53') Then Case When a.i23<0 Then 0 When a.i23 = '' Then 0 When a.i23 Is Null Then 0 Else a.i23 End Else 0 End +  
+        Case When a.c24 in ('53') Then Case When a.i24<0 Then 0 When a.i24 = '' Then 0 When a.i24 Is Null Then 0 Else a.i24 End Else 0 End +  
+        Case When a.c25 in ('53') Then Case When a.i25<0 Then 0 When a.i25 = '' Then 0 When a.i25 Is Null Then 0 Else a.i25 End Else 0 End +  
+        Case When a.c26 in ('53') Then Case When a.i26<0 Then 0 When a.i26 = '' Then 0 When a.i26 Is Null Then 0 Else a.i26 End Else 0 End +  
+        Case When a.c27 in ('53') Then Case When a.i27<0 Then 0 When a.i27 = '' Then 0 When a.i27 Is Null Then 0 Else a.i27 End Else 0 End +  
+        Case When a.c28 in ('53') Then Case When a.i28<0 Then 0 When a.i28 = '' Then 0 When a.i28 Is Null Then 0 Else a.i28 End Else 0 End +  
+        Case When a.c29 in ('53') Then Case When a.i29<0 Then 0 When a.i29 = '' Then 0 When a.i29 Is Null Then 0 Else a.i29 End Else 0 End +  
+        Case When a.c30 in ('53') Then Case When a.i30<0 Then 0 When a.i30 = '' Then 0 When a.i30 Is Null Then 0 Else a.i30 End Else 0 End +  
+        Case When a.c31 in ('53') Then Case When a.i31<0 Then 0 When a.i31 = '' Then 0 When a.i31 Is Null Then 0 Else a.i31 End Else 0 End +  
+        Case When a.c32 in ('53') Then Case When a.i32<0 Then 0 When a.i32 = '' Then 0 When a.i32 Is Null Then 0 Else a.i32 End Else 0 End +  
+        Case When a.c33 in ('53') Then Case When a.i33<0 Then 0 When a.i33 = '' Then 0 When a.i33 Is Null Then 0 Else a.i33 End Else 0 End +  
+        Case When a.c34 in ('53') Then Case When a.i34<0 Then 0 When a.i34 = '' Then 0 When a.i34 Is Null Then 0 Else a.i34 End Else 0 End +  
+        Case When a.c35 in ('53') Then Case When a.i35<0 Then 0 When a.i35 = '' Then 0 When a.i35 Is Null Then 0 Else a.i35 End Else 0 End +  
+        Case When a.c36 in ('53') Then Case When a.i36<0 Then 0 When a.i36 = '' Then 0 When a.i36 Is Null Then 0 Else a.i36 End Else 0 End +  
+        Case When a.c37 in ('53') Then Case When a.i37<0 Then 0 When a.i37 = '' Then 0 When a.i37 Is Null Then 0 Else a.i37 End Else 0 End +  
+        Case When a.c38 in ('53') Then Case When a.i38<0 Then 0 When a.i38 = '' Then 0 When a.i38 Is Null Then 0 Else a.i38 End Else 0 End +  
+        Case When a.c39 in ('53') Then Case When a.i39<0 Then 0 When a.i39 = '' Then 0 When a.i39 Is Null Then 0 Else a.i39 End Else 0 End +  
+        Case When a.c40 in ('53') Then Case When a.i40<0 Then 0 When a.i40 = '' Then 0 When a.i40 Is Null Then 0 Else a.i40 End Else 0 End ) IsR_meta4,  
+    b.isr ISR_registrado_SB, b.registros layout_Recibidos_SB,(count(*) - b.registros) recibos_no_reportados 
+    From cosif_prueba2 a, fechas_timbrado_nomina b 
+    Where a.anio='2022' 
+        And a.quincena= '22' 
+        And a.tipo in ('0','1') 
+        And a.id_empresa='01' 
+        And a.fec_pago = b.fec_pago 
+        And a.quincena = b.quincena 
+        And a.anio = b.anio 
+        Group by 2,4,5 
+        Order by a.fec_pago 
+    ) A Left Outer Join ( 
+    Select a.fec_pago fec_pago_timbrado, Count(*) registros, Sum(T1.ImpRete) Isr 
+    From cosif_prueba2 a 
+    Inner Join timbrado_nomina_2022 T1 ON a.rfc=T1.ID_EMPLEADO AND a.fec_pago=T1.FECHAPAGO 
+    Where a.quincena = '22' 
+        And a.anio = '2022' 
+        And a.tipo in ('0','1') 
+        And a.id_empresa='01' 
+        And (T1.ESTATUS IS NULL OR T1.ESTATUS='Cancelado') 
+        Group By 1 
+        Order By a.fec_pago 
+    ) B 
+    On A.fec_pago_proceso=B.fec_pago_timbrado 
+    Left Outer Join ( 
+    Select a.fec_pago fec_pago_cruce, Count(*) registros_no_timbrados, 
+    Sum( 
+        Case When a.c1 in ('53') Then Case When a.i1<0 Then 0 When a.i1 = '' Then 0 When a.i1 Is Null Then 0 Else a.i1 End Else 0 End +  
+        Case When a.c2 in ('53') Then Case When a.i2<0 Then 0 When a.i2 = '' Then 0 When a.i2 Is Null Then 0 Else a.i2 End Else 0 End +  
+        Case When a.c3 in ('53') Then Case When a.i3<0 Then 0 When a.i3 = '' Then 0 When a.i3 Is Null Then 0 Else a.i3 End Else 0 End +  
+        Case When a.c4 in ('53') Then Case When a.i4<0 Then 0 When a.i4 = '' Then 0 When a.i4 Is Null Then 0 Else a.i4 End Else 0 End +  
+        Case When a.c5 in ('53') Then Case When a.i5<0 Then 0 When a.i5 = '' Then 0 When a.i5 Is Null Then 0 Else a.i5 End Else 0 End +  
+        Case When a.c6 in ('53') Then Case When a.i6<0 Then 0 When a.i6 = '' Then 0 When a.i6 Is Null Then 0 Else a.i6 End Else 0 End +  
+        Case When a.c7 in ('53') Then Case When a.i7<0 Then 0 When a.i7 = '' Then 0 When a.i7 Is Null Then 0 Else a.i7 End Else 0 End +  
+        Case When a.c8 in ('53') Then Case When a.i8<0 Then 0 When a.i8 = '' Then 0 When a.i8 Is Null Then 0 Else a.i8 End Else 0 End +  
+        Case When a.c9 in ('53') Then Case When a.i9<0 Then 0 When a.i9 = '' Then 0 When a.i9 Is Null Then 0 Else a.i9 End Else 0 End +  
+        Case When a.c10 in ('53') Then Case When a.i10<0 Then 0 When a.i10 = '' Then 0 When a.i10 Is Null Then 0 Else a.i10 End Else 0 End +  
+        Case When a.c11 in ('53') Then Case When a.i11<0 Then 0 When a.i11 = '' Then 0 When a.i11 Is Null Then 0 Else a.i11 End Else 0 End +  
+        Case When a.c12 in ('53') Then Case When a.i12<0 Then 0 When a.i12 = '' Then 0 When a.i12 Is Null Then 0 Else a.i12 End Else 0 End +  
+        Case When a.c13 in ('53') Then Case When a.i13<0 Then 0 When a.i13 = '' Then 0 When a.i13 Is Null Then 0 Else a.i13 End Else 0 End +  
+        Case When a.c14 in ('53') Then Case When a.i14<0 Then 0 When a.i14 = '' Then 0 When a.i14 Is Null Then 0 Else a.i14 End Else 0 End +  
+        Case When a.c15 in ('53') Then Case When a.i15<0 Then 0 When a.i15 = '' Then 0 When a.i15 Is Null Then 0 Else a.i15 End Else 0 End +  
+        Case When a.c16 in ('53') Then Case When a.i16<0 Then 0 When a.i16 = '' Then 0 When a.i16 Is Null Then 0 Else a.i16 End Else 0 End +  
+        Case When a.c17 in ('53') Then Case When a.i17<0 Then 0 When a.i17 = '' Then 0 When a.i17 Is Null Then 0 Else a.i17 End Else 0 End +  
+        Case When a.c18 in ('53') Then Case When a.i18<0 Then 0 When a.i18 = '' Then 0 When a.i18 Is Null Then 0 Else a.i18 End Else 0 End +  
+        Case When a.c19 in ('53') Then Case When a.i19<0 Then 0 When a.i19 = '' Then 0 When a.i19 Is Null Then 0 Else a.i19 End Else 0 End +  
+        Case When a.c20 in ('53') Then Case When a.i20<0 Then 0 When a.i20 = '' Then 0 When a.i20 Is Null Then 0 Else a.i20 End Else 0 End +  
+        Case When a.c21 in ('53') Then Case When a.i21<0 Then 0 When a.i21 = '' Then 0 When a.i21 Is Null Then 0 Else a.i21 End Else 0 End +  
+        Case When a.c22 in ('53') Then Case When a.i22<0 Then 0 When a.i22 = '' Then 0 When a.i22 Is Null Then 0 Else a.i22 End Else 0 End +  
+        Case When a.c23 in ('53') Then Case When a.i23<0 Then 0 When a.i23 = '' Then 0 When a.i23 Is Null Then 0 Else a.i23 End Else 0 End +  
+        Case When a.c24 in ('53') Then Case When a.i24<0 Then 0 When a.i24 = '' Then 0 When a.i24 Is Null Then 0 Else a.i24 End Else 0 End +  
+        Case When a.c25 in ('53') Then Case When a.i25<0 Then 0 When a.i25 = '' Then 0 When a.i25 Is Null Then 0 Else a.i25 End Else 0 End +  
+        Case When a.c26 in ('53') Then Case When a.i26<0 Then 0 When a.i26 = '' Then 0 When a.i26 Is Null Then 0 Else a.i26 End Else 0 End +  
+        Case When a.c27 in ('53') Then Case When a.i27<0 Then 0 When a.i27 = '' Then 0 When a.i27 Is Null Then 0 Else a.i27 End Else 0 End +  
+        Case When a.c28 in ('53') Then Case When a.i28<0 Then 0 When a.i28 = '' Then 0 When a.i28 Is Null Then 0 Else a.i28 End Else 0 End +  
+        Case When a.c29 in ('53') Then Case When a.i29<0 Then 0 When a.i29 = '' Then 0 When a.i29 Is Null Then 0 Else a.i29 End Else 0 End +  
+        Case When a.c30 in ('53') Then Case When a.i30<0 Then 0 When a.i30 = '' Then 0 When a.i30 Is Null Then 0 Else a.i30 End Else 0 End +  
+        Case When a.c31 in ('53') Then Case When a.i31<0 Then 0 When a.i31 = '' Then 0 When a.i31 Is Null Then 0 Else a.i31 End Else 0 End +  
+        Case When a.c32 in ('53') Then Case When a.i32<0 Then 0 When a.i32 = '' Then 0 When a.i32 Is Null Then 0 Else a.i32 End Else 0 End +  
+        Case When a.c33 in ('53') Then Case When a.i33<0 Then 0 When a.i33 = '' Then 0 When a.i33 Is Null Then 0 Else a.i33 End Else 0 End +  
+        Case When a.c34 in ('53') Then Case When a.i34<0 Then 0 When a.i34 = '' Then 0 When a.i34 Is Null Then 0 Else a.i34 End Else 0 End +  
+        Case When a.c35 in ('53') Then Case When a.i35<0 Then 0 When a.i35 = '' Then 0 When a.i35 Is Null Then 0 Else a.i35 End Else 0 End +  
+        Case When a.c36 in ('53') Then Case When a.i36<0 Then 0 When a.i36 = '' Then 0 When a.i36 Is Null Then 0 Else a.i36 End Else 0 End +  
+        Case When a.c37 in ('53') Then Case When a.i37<0 Then 0 When a.i37 = '' Then 0 When a.i37 Is Null Then 0 Else a.i37 End Else 0 End +  
+        Case When a.c38 in ('53') Then Case When a.i38<0 Then 0 When a.i38 = '' Then 0 When a.i38 Is Null Then 0 Else a.i38 End Else 0 End +  
+        Case When a.c39 in ('53') Then Case When a.i39<0 Then 0 When a.i39 = '' Then 0 When a.i39 Is Null Then 0 Else a.i39 End Else 0 End +  
+        Case When a.c40 in ('53') Then Case When a.i40<0 Then 0 When a.i40 = '' Then 0 When a.i40 Is Null Then 0 Else a.i40 End Else 0 End ) Isr_no_timbrado 
+    From cosif_prueba2 a 
+    Left Outer Join timbrado_nomina_2022 T1 
+    On a.rfc=T1.id_Empleado 
+    And a.fec_pago=t1.fechapago 
+    Where a.quincena = '22' 
+        And a.anio = '2022' 
+        And a.tipo in ('0','1') 
+        And a.id_empresa='01' 
+        And T1.UUID Is Null 
+        Group By 1 
+        Order By a.fec_pago 
+    ) C 
+    On B.fec_pago_timbrado=C.fec_pago_cruce;
