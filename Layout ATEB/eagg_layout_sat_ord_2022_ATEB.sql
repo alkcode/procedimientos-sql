@@ -440,7 +440,7 @@ returning char(265);
             Select count(*) Into wlongmal From m4t_empleados 
                Where id_sociedad=id_sociedad And id_empleado=wemp And Length(id_c_u_r_p_st)!= 18;
             Select count(*) Into wcaracterr From m4t_empleados 
-               Where id_sociedad=id_sociedad And id_empleado=wemp And id_c_u_r_p_st matches'*ï¿½*';
+               Where id_sociedad=id_sociedad And id_empleado=wemp And id_c_u_r_p_st matches'*Ñ*'; --Si
          
             If (wcurp[1,2] = '  ' Or wcurp Is Null Or wlongmal = 1 Or wcaracterr = 1) Then let wcurp = ' '; End If;
             If (wnumero_ss[1,2] = '  ' Or wnumero_ss is null) then let wnumero_ss = '99999999999'; End If;
