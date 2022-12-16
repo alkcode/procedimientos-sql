@@ -53,7 +53,7 @@ SELECT a.fec_pago, COUNT(*) Registros,
       --AND a.fec_pago BETWEEN   AND   
       And a.fec_pago IN('2022-11-30') 
       Group By a.fec_pago--, a.impacum_p5
-      Order By a.fec_pago ;
+      Order By a.fec_pago;
       
 select * from cosif_timbrado_2022 where rfc = 407986;
 
@@ -225,7 +225,7 @@ Select
     And d.concepto = c.id_concepto
     And c.id_ordinal = 1
     And m.impacum_p5 In (0,1,2,3,5)
-    And fec_pago = '2022/11/30' --Between '2022/03/10' and '2022/03/13'
+    And fec_pago = '2022/12/31' --Between '2022/03/10' and '2022/03/13'
     And tipo IN ('0', '1')
     And concepto in ('53','IA')
 --and tipo = '2'
@@ -233,11 +233,11 @@ Select
   Order by 2,3,4 desc,5 asc,1;
 
 
-SELECT *
-        --m4_acumulado_rl1.id_empresa,
-        --m4_acumulado_rl.id_tipo_plaza,
-        --sum(m4_acumulado_rl.ISPT),
-        --sum(m4_acumulado_rl.ISR_AGUIN)
+SELECT 
+        m4_acumulado_rl1.id_empresa,
+        m4_acumulado_rl.id_tipo_plaza,
+        sum(m4_acumulado_rl.ISPT),
+        sum(m4_acumulado_rl.ISR_AGUIN)
        FROM
         m4t_acumulado_rl_2011 m4_acumulado_rl,
         m4t_acumulado_rl1_2011 m4_acumulado_rl1
@@ -249,7 +249,7 @@ SELECT *
         m4_acumulado_rl.fec_pago=m4_acumulado_rl1.fec_pago AND
         m4_acumulado_rl.fec_pago = "2022/11/30" and
         m4_acumulado_rl1.id_empresa = '01' and
-        m4_acumulado_rl1.id_empleado = '407986'
+        m4_acumulado_rl1.id_empleado In('407986')
 group by 1,2;
 
 

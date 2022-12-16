@@ -1,5 +1,5 @@
 drop procedure if exists eagg_layout_sat_ord_2022_ATEB_dinamico;
-create procedure eagg_layout_sat_ord_2022_ATEB_dinamico(wfec_pago date,wtipo varchar(1), wempresa varchar(2), wempleados varchar(255))
+create procedure eagg_layout_sat_ord_2022_ATEB_dinamico(wfec_pago date,wtipo varchar(1), wempresa varchar(2), wempleados varchar(254))
 returning char(265);
 -----modificado por EAGG. Programa para ISSSTE ASEGURADOR, TURISSSTE Y PENSIONISSSTE el d�a 11/01/2022
 -----usa GenLinSATu.sql y GenNOHu.sql, u al final es ultima version
@@ -55,6 +55,7 @@ returning char(265);
       let query_condicion='';
    Else
       let query_condicion = " And rfc in (" || wempleados ||") ";
+      let query_condicion = TRIM(query_condicion);
    End If;
 	
    
@@ -62,7 +63,7 @@ returning char(265);
    Drop Table info_sat9;
   
    Create Table info_sat9
-     (num_linea Integer,
+      (num_linea Integer,
       id_empresa Varchar(02),
       id_empleado Varchar(10),
       linea char(500)) fragment by round robin in bdbase,bdhist;
@@ -116,16 +117,44 @@ returning char(265);
 	end if;
 	 
    --Foreach 
-      let _query_principal = "Select id_empresa,rfc[1,6],num_cons,tot_net_cheque,tot_ded_cheque,tot_perc_cheque,trim(nom_emp),id_banco,cuenta,id_div_geografica, adscripcion, " ||
-         "p1,c1,i1,p2,c2,i2,p3,c3,i3,p4,c4,i4,p5,c5,i5,p6,c6,i6,p7,c7,i7,p8,c8,i8,p9,c9,i9,p10,c10,i10, " ||
-         "p11,c11,i11,p12,c12,i12,p13,c13,i13,p14,c14,i14,p15,c15,i15,p16,c16,i16,p17,c17,i17,p18,c18,i18,p19,c19,i19,p20,c20,i20, " ||
+      -- let _query_principal = "Select id_empresa,rfc[1,6],num_cons,tot_net_cheque,tot_ded_cheque,tot_perc_cheque,trim(nom_emp),id_banco,cuenta,id_div_geografica, adscripcion, " ||
+      --    "p1,c1,i1,p2,c2,i2,p3,c3,i3,p4,c4,i4,p5,c5,i5,p6,c6,i6,p7,c7,i7,p8,c8,i8,p9,c9,i9,p10,c10,i10, " ||
+      --    "p11,c11,i11,p12,c12,i12,p13,c13,i13,p14,c14,i14,p15,c15,i15,p16,c16,i16,p17,c17,i17,p18,c18,i18,p19,c19,i19,p20,c20,i20, " ||
+      --    "p21,c21,i21,p22,c22,i22,p23,c23,i23,p24,c24,i24,p25,c25,i25,p26,c26,i26,p27,c27,i27,p28,c28,i28,p29,c29,i29,p30,c30,i30, " ||
+      --    "p31,c31,i31,p32,c32,i32,p33,c33,i33,p34,c34,i34,p35,c35,i35,p36,c36,i36,p37,c37,i37,p38,c38,i38,p39,c39,i39,p40,c40,i40 " ||
+      --    "From eagg_cosif_timbrado_2022 " ||
+      --    "Where fec_pago = '" || wfec_pago || "' " ||
+      --       "And id_empresa = '" || wempresa || "' " ||
+      --       "And tipo = '" || wtipo || "' " || query_condicion || " " ||
+      --       "Order By 2 ";
+      
+      let _query_principal = "Select " ||
+         "id_empresa,rfc[1,6],num_cons,tot_net_cheque,tot_ded_cheque,tot_perc_cheque,trim(nom_emp),id_banco,cuenta,id_div_geografica, adscripcion, " ||
+         "p1,c1,i1,p2,c2,i2,p3,c3,i3, " ||
+         "p4,c4,i4,p5,c5,i5,p6,c6,i6,p7,c7,i7,p8,c8,i8,p9,c9,i9,p10,c10,i10, " ||
+         "p11,c11,i11,p12,c12,i12,p13,c13,i13,p14,c14,i14, " ||
+         "p15,c15,i15,p16,c16,i16,p17,c17,i17,p18,c18,i18,p19,c19,i19,p20,c20,i20, " ||
          "p21,c21,i21,p22,c22,i22,p23,c23,i23,p24,c24,i24,p25,c25,i25,p26,c26,i26,p27,c27,i27,p28,c28,i28,p29,c29,i29,p30,c30,i30, " ||
-         "p31,c31,i31,p32,c32,i32,p33,c33,i33,p34,c34,i34,p35,c35,i35,p36,c36,i36,p37,c37,i37,p38,c38,i38,p39,c39,i39,p40,c40,i40 " ||
-         "From eagg_cosif_timbrado_2022 " ||
-         "Where fec_pago = '" || wfec_pago || "' " ||
-            "And id_empresa = '" || wempresa || "' " ||
-            "And tipo = '" || wtipo || "' " || query_condicion || " " ||
-            "Order By 2 ";
+         "p31,c31,i31,p32,c32,i32,p33,c33,i33,p34,c34,i34,p35,c35,i35,p36,c36,i36,p37,c37,i37,p38,c38,i38,p39,c39,i39,p40,c40,i40, " ||
+         "trim(id_c_u_r_p_st),numero_ss,trim(id_legal), " ||
+	      "nvl(trim(apellido_1),' ')||' '||nvl(trim(apellido_2),' ')||' '||nvl(trim(nombre),' '),nvl(trim(codigo_postal),' ')CP, NVL(pagaduria, 'ERROR') pagaduria, " ||
+	      "Case " ||
+         "  When cp Is Null And C.id_empresa = '01' Then '06080' " ||
+         "  When cp Is Null And C.id_empresa = '03' Then '06030' " ||
+         "  When cp Is Null And C.id_empresa = '05' Then '01010' " ||
+         "Else cp " ||
+         "End cp " ||
+         "From eagg_cosif_timbrado_2022 C " ||
+         "  Left Outer Join m4t_empleados E " ||
+         "     On C.rfc = E.id_empleado " ||
+         "  Left Outer Join ramo_ct_tim R " ||
+         "     On C.adscripcion = R.ct10 " ||
+         "  Left Join m4t_domicilios_issste D " ||
+         "     On D.id_centro_pago = R.pagaduria " ||
+         " Where fec_pago = '" || wfec_pago || "' " ||
+         "  And id_empresa = '" || wempresa || "' " ||
+         "  And tipo = '" || wtipo || "' " || query_condicion || " " ||
+         "  Order By 2 ";
 
       let _query_principal = TRIM(_query_principal);
       Prepare stmt_qry_principal From _query_principal;
@@ -146,16 +175,17 @@ returning char(265);
             wp1,wc1,wi1,wp2,wc2,wi2,wp3,wc3,wi3,wp4,wc4,wi4,wp5,wc5,wi5,wp6,wc6,wi6,wp7,wc7,wi7,wp8,wc8,wi8,wp9,wc9,wi9,wp10,wc10,wi10,
             wp11,wc11,wi11,wp12,wc12,wi12,wp13,wc13,wi13,wp14,wc14,wi14,wp15,wc15,wi15,wp16,wc16,wi16,wp17,wc17,wi17,wp18,wc18,wi18,wp19,wc19,wi19,wp20,wc20,wi20,
             wp21,wc21,wi21,wp22,wc22,wi22,wp23,wc23,wi23,wp24,wc24,wi24,wp25,wc25,wi25,wp26,wc26,wi26,wp27,wc27,wi27,wp28,wc28,wi28,wp29,wc29,wi29,wp30,wc30,wi30,
-            wp31,wc31,wi31,wp32,wc32,wi32,wp33,wc33,wi33,wp34,wc34,wi34,wp35,wc35,wi35,wp36,wc36,wi36,wp37,wc37,wi37,wp38,wc38,wi38,wp39,wc39,wi39,wp40,wc40,wi40;
+            wp31,wc31,wi31,wp32,wc32,wi32,wp33,wc33,wi33,wp34,wc34,wi34,wp35,wc35,wi35,wp36,wc36,wi36,wp37,wc37,wi37,wp38,wc38,wi38,wp39,wc39,wi39,wp40,wc40,wi40,
+            wcurp,wnumero_ss,wid_legal,wnombre2,wcp_emp, wpagaduria, wcp;
          
          If (SQLCODE != 100) Then
                         
-            Select trim(id_c_u_r_p_st),numero_ss,trim(id_legal),
-               nvl(trim(apellido_1),' ')||' '||nvl(trim(apellido_2),' ')||' '||nvl(trim(nombre),' '),nvl(trim(codigo_postal),' ')
-               Into wcurp,wnumero_ss,wid_legal,wnombre2,wcp_emp
-               From m4t_empleados
-               Where id_sociedad = id_sociedad
-                  And id_empleado = wemp;
+            -- Select trim(id_c_u_r_p_st),numero_ss,trim(id_legal),
+            --    nvl(trim(apellido_1),' ')||' '||nvl(trim(apellido_2),' ')||' '||nvl(trim(nombre),' '),nvl(trim(codigo_postal),' ')
+            --    Into wcurp,wnumero_ss,wid_legal,wnombre2,wcp_emp
+            --    From m4t_empleados
+            --    Where id_sociedad = id_sociedad
+            --       And id_empleado = wemp;
 
             If (wcp_emp Is null) Or (Length(wcp_emp) != 5) Then 
                let wcp_emp = 'SINCP'; 
@@ -361,13 +391,13 @@ returning char(265);
 
             let desc_err = 'E01';
             
-            let wcp = 0;
+            -- let wcp = 0;
 
-            If wcp = 0 Then
-               if wempresa='01' then let wcp = '06080'; end if;
-               if wempresa='03' then let wcp = '06030'; end if;
-               if wempresa='05' then let wcp = '01010'; end if; 
-            End If;
+            -- If wcp = 0 Then
+            --    if wempresa='01' then let wcp = '06080'; end if;
+            --    if wempresa='03' then let wcp = '06030'; end if;
+            --    if wempresa='05' then let wcp = '01010'; end if; 
+            -- End If;
 
          --insert into valida_timbrado (fec_pago,id_empleado,tot_per,tot_ded,tot_net,isr,id_empresa) values (wfec_pago,wemp,wperc,wdeduc,wliquido,wispt,wid_empresa);       ----validacion de timbrado
 
@@ -427,9 +457,9 @@ returning char(265);
             
             
 
-            Select pagaduria Into wpagaduria
-               From ramo_ct_ok Where ct10 = wadscripcion;       
-            If wpagaduria Is Null Then let wpagaduria = 'ERROR'; End If;
+            -- Select pagaduria Into wpagaduria
+            --    From ramo_ct_ok Where ct10 = wadscripcion;       
+            -- If wpagaduria Is Null Then let wpagaduria = 'ERROR'; End If;
             
             Select cp Into wcp 
                From m4t_domicilios_issste Where id_centro_pago = wpagaduria;
