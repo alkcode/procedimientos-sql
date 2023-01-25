@@ -1,7 +1,7 @@
 drop procedure if exists eagg_layout_sat_ord_2022_ATEB_dinamico;
 create procedure eagg_layout_sat_ord_2022_ATEB_dinamico(wfec_pago date,wtipo varchar(1), wempresa varchar(2), wempleados varchar(254))
 returning char(265);
------modificado por EAGG. Programa para ISSSTE ASEGURADOR, TURISSSTE Y PENSIONISSSTE el dï¿½a 11/01/2022
+-----modificado por EAGG. Programa para ISSSTE ASEGURADOR, TURISSSTE Y PENSIONISSSTE el d?a 11/01/2022
 -----usa GenLinSATu.sql y GenNOHu.sql, u al final es ultima version
 -----modificado para tabla cosif_timbrado_2022 el 11/01/2022
    define wi1,wi2,wi3,wi4,wi5,wi6,wi7,wi8,wi9,wi10,wi11,wi12,wi13,wi14,wi15,wi16,wi17,wi18,wi19,wi20          money(18,2);
@@ -403,7 +403,7 @@ returning char(265);
 
          --let cadenaE01 = 'E01'||rpad(wnum_cons2,20,' ')||rpad(wfec_pagox,19,' ')||rpad(wperc,18,' ')||rpad(wdeduc,18,' ')||rpad(wliquido,18,' ')||rpad('NO',2,' ')||rpad('PUE',3,' ')||rpad('99',3,' ');
             let cadenaE01 = 'E01'||rpad(wnum_cons2,20,' ')||rpad(wfec_pagox,19,' ')||rpad(wperc,18,' ')||rpad(wdeduc,18,' ')||rpad('MXN',3,' ')||rpad(wliquido,18,' ')||rpad('N',2,' ')||rpad('01',2,' ')||rpad(wcp,5,' ');
-
+                                   --Folio y serie(10 y 10) --Fecha                  --Subtotal          --Descuento          --Moneda            --Total          --Tipo de comprobante --Exportacion    --Lugar de expedicion
             let wnum_linea = wnum_linea + 1;
             insert into info_sat9 (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE01);
 
@@ -440,7 +440,7 @@ returning char(265);
             Select count(*) Into wlongmal From m4t_empleados 
                Where id_sociedad=id_sociedad And id_empleado=wemp And Length(id_c_u_r_p_st)!= 18;
             Select count(*) Into wcaracterr From m4t_empleados 
-               Where id_sociedad=id_sociedad And id_empleado=wemp And id_c_u_r_p_st matches'*Ñ*'; --Si
+               Where id_sociedad=id_sociedad And id_empleado=wemp And id_c_u_r_p_st matches'*?*'; --Si
          
             If (wcurp[1,2] = '  ' Or wcurp Is Null Or wlongmal = 1 Or wcaracterr = 1) Then let wcurp = ' '; End If;
             If (wnumero_ss[1,2] = '  ' Or wnumero_ss is null) then let wnumero_ss = '99999999999'; End If;
@@ -452,6 +452,7 @@ returning char(265);
             let wnum_linea = wnum_linea + 1;
 
             --let cadenaE02 = 'E02'||rpad(wemp,20,' ')||rpad(wid_legal,13,' ')||rpad(trim(wnombre),150,' ')||'@';
+                                   --No. empleado     --RFC                   --Nombre               --DomicilioFiscalReceptor  --RegimenFiscalReceptor
             let cadenaE02 = 'E02'||rpad(wemp,20,' ')||rpad(wid_legal,13,' ')||rpad(trim(wnombre),150,' ')||rpad(wcp_emp,5,' ')||rpad('605',3,' ')||'@';
             Insert Into info_sat9 (num_linea,id_empresa,id_empleado,linea) Values (wnum_linea,wid_empresa,wemp,cadenaE02);
             
@@ -474,24 +475,25 @@ returning char(265);
             let wnum_linea = wnum_linea + 1;
             Insert Into info_sat9 (num_linea,id_empresa,id_empleado,linea) Values (wnum_linea,wid_empresa,wemp,cadE03a||cadE03b||rpad(wcp,5,' ')||'@');
 
-
+                                 --Retencion         Impuesto
             let cadenaE04='E04'||rpad(wispt,14,' ')||rpad(wzero,14,' ')||'@';
             let wnum_linea=wnum_linea+1;
             Insert Into info_sat9 (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadenaE04);
 
             Select porcent Into wporcent From porc_emp Where id_empleado=wemp;
 
-
+                           --IdentificacionImpuesto --MontoImpuesto     --PorcentajeImpuesto --TipoImpuesto
             let cadenaE05='E05'||rpad('001',5,' ')||rpad(wispt,14,' ')||lpad(wporcent,14,'0')||rpad('Si',3,' ')||'@';
             let wnum_linea=wnum_linea+1;
             Insert Into info_sat9 (num_linea,id_empresa,id_empleado,linea) Values (wnum_linea,wid_empresa,wemp,cadenaE05);
-
+                               --Moneda                 --TipoCambio     --CustomField15            
             let cadEA1a='EA1'||rpad('MXN',3,' ')||'  '||rpad('1',14,' ');
             let cadEA1b=rpad(' ',256,' ')||'@';
             let wnum_linea=wnum_linea+1;
             Insert Into info_sat9 (num_linea,id_empresa,id_empleado,linea) Values (wnum_linea,wid_empresa,wemp,cadEA1a||cadEA1b);
 
             --let cadenaD01='D01'||rpad(' ',14,' ')||rpad('ACT',8,' ')||rpad(' ',20,' ')||rpad(' ',20,' ')||rpad(trim(wdescrip),150,' ')||rpad(wperc,14,' ')||'@';
+                                 --Cantidad        --ClaveProdServ    --Descripcion     --Precio          --Monto                       --Descuento         --ObjetoImp
             let cadenaD01='D01'||rpad(' ',14,' ')||rpad('ACT',8,' ')||rpad(' ',20,' ')||rpad(' ',20,' ')||rpad(trim(wdescrip),150,' ')||rpad(wperc,14,' ')||rpad('01',2,' ')||'@';
             let wnum_linea=wnum_linea+1;
             Insert Into info_sat9 (num_linea,id_empresa,id_empleado,linea) Values (wnum_linea,wid_empresa,wemp,cadenaD01);
@@ -499,8 +501,7 @@ returning char(265);
             let wfec_iniciox=wfec_inicio; let wfec_finx=wfec_fin;
             
             If wempresa <> "02" Then
-               
-               let desc_err = 'NOE inf_rl01';
+                let desc_err = 'NOE inf_rl01';
 
                Select count(*) into wbandera01
                From m4t_acumulado_rl1_2011 a, m4t_acumulado_rl_2011 b 
@@ -557,8 +558,8 @@ returning char(265);
             let wsindl_c = 'No';
             let wfec_alta2 = wfec_alta;
 
-            if wsindl > 0 then let wsindl_c = 'Sí'; end if; --Si
-            if wsindn > 0 then let wsindl_c = 'Sí'; end if; --Si
+            if wsindl > 0 then let wsindl_c = 'S?'; end if; --Si
+            if wsindn > 0 then let wsindl_c = 'S?'; end if; --Si
       
          Else
 
@@ -664,21 +665,23 @@ returning char(265);
          
             let desc_err = "NOE DatosPago06";
             let desc_err = "NOE Arma"||"-"||wforpago||"-"||wbanco||"-"||wcuenta;
-
+                                 --NumEmpleado      --CURP              --TipoRegimen     --NumSeguroSocial        --FechaPago             --FechaInicialPago         --FechaFinalPago         --NumDiasPagados   --Departamento     --CuentaBancaria      --Banco            --FechaInicioRelLaboral        --Antiguedad
             let cadNOEa= 'NOE' ||rpad(wemp,15,' ')||rpad(wcurp,18,' ')||rpad('02',3,' ')||rpad(wnumero_ss,15,' ')||rpad(wfec_finx,10,' ')||rpad(wfec_iniciox,10,' ')||rpad(wfec_finx,10,' ')||lpad(wdias,18,'0')||rpad(' ',100,' ')||rpad(wcuenta,18,' ')||rpad(wbanco_c,3,' ')||rpad(wfec_alta2,10,' ')||rpad(wdiaantig,10,' ');
             let cadNOEb=rpad(' ',100,' ')||rpad(w_TipCont1,20,' ')||rpad(' ',20,' ')||rpad(w_Period1,20,' ')||rpad(' ',18,' ')||rpad('1',4,' ')||rpad(' ',18,' ')||rpad('  ',2,'  ')||rpad(wsindl_c,2,' ')||rpad(westado_c,3,' ')||'@';
-
+                        --Puesto           --TipoContrato           TipoJornada       Periodicidad        --SalarioBaseCotApor --RiesgoPuesto  --SalarioDiarioIntegrado --TipoRecibo  --Sindicalizado       --ClaveEntFed
             let wnum_linea=wnum_linea+1;
             let desc_err = "inserta NOEa";
             insert into info_sat9 (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadNOEa||cadNOEb);
+          
          
-         
+            -- let cadNO2 = 'NO2'||rpad(w_TipNom1,2,' ')||'@';
+                                --TipoNomina           --TotalPercep       --TotalDed           --TotalOtrosPagos --TotalSueldos    --TotalSepInd     --TotalJubPenRet  --TotalOtrasDed   --TotalImpRet     --TotalGravado    --TotalGravado
+            let cadNO2 = 'NO2'||rpad(w_TipNom1,2,' ')||rpad(wperc,18,' ')||rpad(wdeduc,18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')||rpad(' ',18,' ')'@';
 
-            let cadNO2 = 'NO2'||rpad(w_TipNom1,2,' ')||'@';
             let wnum_linea=wnum_linea+1;
             insert into info_sat9 (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadNO2);
 
-
+                                --CURP            --RegistroPatronal                   --RFCPatronOrigen  --OrigenRecurso  --MontoRecursoPropio
             let cadNO3 = 'NO3'||rpad(' ',18,' ')||rpad('00'||wramo||wpagaduria,20,' ')||rpad(' ',13,' ')||rpad('IF',2,' ')||rpad(' ',18,' ')||'@';
             let wnum_linea=wnum_linea+1;
             insert into info_sat9 (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadNO3);
@@ -966,7 +969,7 @@ returning char(265);
                if wc40='09' and wi40 > 0 then call GenNOHu(wemp,wfec_pago,wi40,wc40,wnum_linea,wid_empresa,wconp) returning wnum_linea; end if;  
             end if;
 
-
+                              --Consecutivo    --TipoOtroPago     --Clave             --Concepto                               --Importe            --SubsidioCausado    --SaldoAFavor        --A?o y RemanenteSalFav(4 y 18)
          let cadNOP = 'NOP' ||rpad('1',4,' ')||rpad('002',3,' ')||rpad('046',15,' ')||rpad('Subsidio para el empleo',100,' ')||rpad('0.00',18,' ')||rpad('0.00',18,' ')||rpad('0.00',18,' ')||rpad(' ',22,' ')||'@';
          let wnum_linea=wnum_linea+1;
          insert into info_sat9 (num_linea,id_empresa,id_empleado,linea) values (wnum_linea,wid_empresa,wemp,cadNOP);
